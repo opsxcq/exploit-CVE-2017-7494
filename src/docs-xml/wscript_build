@@ -1,0 +1,143 @@
+#!/usr/bin/env python
+from samba_utils import save_file
+manpages='''
+         manpages/cifsdd.8
+         manpages/dbwrap_tool.1
+         manpages/eventlogadm.8
+         manpages/findsmb.1
+         manpages/libsmbclient.7
+         manpages/lmhosts.5
+         manpages/log2pcap.1
+         manpages/idmap_ad.8
+         manpages/idmap_autorid.8
+         manpages/idmap_hash.8
+         manpages/idmap_ldap.8
+         manpages/idmap_nss.8
+         manpages/idmap_rfc2307.8
+         manpages/idmap_rid.8
+         manpages/idmap_script.8
+         manpages/idmap_tdb.8
+         manpages/idmap_tdb2.8
+         manpages/net.8
+         manpages/nmbd.8
+         manpages/nmblookup.1
+         manpages/ntlm_auth.1
+         manpages/pdbedit.8
+         manpages/profiles.1
+         manpages/rpcclient.1
+         manpages/samba.7
+         manpages/samba.8
+         manpages/samba-tool.8
+         manpages/samba-regedit.8
+         manpages/sharesec.1
+         manpages/smbcacls.1
+         manpages/smbclient.1
+         manpages/smbcontrol.1
+         manpages/smbcquotas.1
+         manpages/smbd.8
+         manpages/smbget.1
+         manpages/smbgetrc.5
+         manpages/smbpasswd.5
+         manpages/smbpasswd.8
+         manpages/smbspool.8
+         manpages/smbspool_krb5_wrapper.8
+         manpages/smbstatus.1
+         manpages/smbtar.1
+         manpages/smbtree.1
+         manpages/testparm.1
+         manpages/vfs_acl_tdb.8
+         manpages/vfs_acl_xattr.8
+         manpages/vfs_aio_fork.8
+         manpages/vfs_aio_linux.8
+         manpages/vfs_aio_pthread.8
+         manpages/vfs_audit.8
+	 manpages/vfs_btrfs.8
+         manpages/vfs_cacheprime.8
+         manpages/vfs_cap.8
+         manpages/vfs_catia.8
+         manpages/vfs_ceph.8
+         manpages/vfs_commit.8
+         manpages/vfs_crossrename.8
+         manpages/vfs_default_quota.8
+         manpages/vfs_dirsort.8
+         manpages/vfs_extd_audit.8
+         manpages/vfs_fake_perms.8
+         manpages/vfs_fileid.8
+         manpages/vfs_fruit.8
+         manpages/vfs_full_audit.8
+         manpages/vfs_glusterfs.8
+         manpages/vfs_gpfs.8
+         manpages/vfs_linux_xfs_sgid.8
+         manpages/vfs_media_harmony.8
+         manpages/vfs_netatalk.8
+         manpages/vfs_offline.8
+         manpages/vfs_prealloc.8
+         manpages/vfs_preopen.8
+         manpages/vfs_readahead.8
+         manpages/vfs_readonly.8
+         manpages/vfs_recycle.8
+         manpages/vfs_shadow_copy.8
+         manpages/vfs_shadow_copy2.8
+	 manpages/vfs_shell_snap.8
+	 manpages/vfs_snapper.8
+         manpages/vfs_streams_depot.8
+         manpages/vfs_streams_xattr.8
+         manpages/vfs_syncops.8
+         manpages/vfs_time_audit.8
+         manpages/vfs_tsmsm.8
+         manpages/vfs_unityed_media.8
+         manpages/vfs_worm.8
+         manpages/vfs_xattr_tdb.8
+         manpages/vfstest.1
+         manpages/wbinfo.1
+         manpages/winbindd.8
+         '''
+
+pam_winbind_manpages = '''
+                       manpages/pam_winbind.8
+                       manpages/pam_winbind.conf.5
+                       '''
+
+krb5_locator_manpages = 'manpages/winbind_krb5_locator.7'
+
+def smbdotconf_generate_parameter_list(task):
+    parameter_all = task.outputs[0].bldpath(task.env)
+    articles = task.inputs
+
+    entities = bld.pathconfig_entities()
+    t = "<!DOCTYPE section [\n"
+
+    for entity in entities:
+        t += "%s\n" % entity
+
+    t += "]>\n"
+    t += "<section>\n"
+    for article in articles:
+        t += article.read()
+
+    t += "</section>\n"
+    save_file(parameter_all, t , create_dir=True)
+    return 0
+
+articles = bld.path.ant_glob("smbdotconf/**/*.xml", flat=True)
+parameter_all = 'smbdotconf/parameters.all.xml'
+bld.SAMBA_GENERATOR(parameter_all,
+                    source=articles,
+                    target=parameter_all,
+                    rule=smbdotconf_generate_parameter_list,
+                    dep_vars=bld.dynconfig_varnames())
+
+def SMBDOTCONF_MANPAGE(bld, target):
+    ''' assemble and build smb.conf.5 manual page'''
+    bld.SAMBAMANPAGES(target, parameter_all)
+
+if ('XSLTPROC_MANPAGES' in bld.env and bld.env['XSLTPROC_MANPAGES']):
+
+    SMBDOTCONF_MANPAGE(bld, 'manpages/smb.conf.5')
+    bld.SAMBAMANPAGES(manpages)
+
+    if bld.CONFIG_SET('WITH_PAM_MODULES') and bld.CONFIG_SET('HAVE_PAM_START'):
+        bld.SAMBAMANPAGES(pam_winbind_manpages)
+
+    if bld.CONFIG_SET('HAVE_KRB5_LOCATE_PLUGIN_H'):
+        bld.SAMBAMANPAGES(krb5_locator_manpages)

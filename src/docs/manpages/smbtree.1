@@ -1,0 +1,66 @@
+'\" t
+.\"     Title: smbtree
+.\"    Author: [see the "AUTHOR" section]
+.\" Generator: DocBook XSL Stylesheets v1.78.1 <http://docbook.sf.net/>
+.\"      Date: 05/18/2017
+.\"    Manual: User Commands
+.\"    Source: Samba 4.5
+.\"  Language: English
+.\"
+.TH "SMBTREE" "1" "05/18/2017" "Samba 4\&.5" "User Commands"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+smbtree \- A text based smb network browser
+.SH "SYNOPSIS"
+.HP \w'\ 'u
+smbtree [\-b] [\-D] [\-S]
+.SH "DESCRIPTION"
+.PP
+This tool is part of the
+\fBsamba\fR(7)
+suite\&.
+.PP
+smbtree
+is a smb browser program in text mode\&. It is similar to the "Network Neighborhood" found on Windows computers\&. It prints a tree with all the known domains, the servers in those domains and the shares on the servers\&.
+.SH "OPTIONS"
+.PP
+\-b|\-\-broadcast
+.RS 4
+Query network nodes by sending requests as broadcasts instead of querying the local master browser\&.
+.RE
+.PP
+\-D|\-\-domains
+.RS 4
+Only print a list of all the domains known on broadcast or by the master browser
+.RE
+.PP
+\-S|\-\-servers
+.RS 4
+Only print a list of all the domains and servers responding on broadcast or known by the master browser\&.
+.RE
+.SH "VERSION"
+.PP
+This man page is correct for version 3 of the Samba suite\&.
+.SH "AUTHOR"
+.PP
+The original Samba software and related utilities were created by Andrew Tridgell\&. Samba is now developed by the Samba Team as an Open Source project similar to the way the Linux kernel is developed\&.
+.PP
+The smbtree man page was written by Jelmer Vernooij\&.

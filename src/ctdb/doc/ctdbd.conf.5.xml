@@ -1,0 +1,1835 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE refentry
+	PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
+	"http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd">
+
+<refentry id="ctdbd.conf.5">
+
+  <refmeta>
+    <refentrytitle>ctdbd.conf</refentrytitle>
+    <manvolnum>5</manvolnum>
+    <refmiscinfo class="source">ctdb</refmiscinfo>
+    <refmiscinfo class="manual">CTDB - clustered TDB database</refmiscinfo>
+  </refmeta>
+
+  <refnamediv>
+    <refname>ctdbd.conf</refname>
+    <refpurpose>CTDB daemon configuration file</refpurpose>
+  </refnamediv>
+
+  <refsect1>
+    <title>DESCRIPTION</title>
+
+    <para>
+      This file contains CTDB configuration variables that are affect
+      the operation of CTDB.  The default location of this file is
+      <filename>/usr/local/etc/ctdb/ctdbd.conf</filename>.
+    </para>
+
+    <para>
+      This file is a shell script (see
+      <citerefentry><refentrytitle>sh</refentrytitle>
+      <manvolnum>1</manvolnum></citerefentry>) but is usually limited
+      to simple variable assignments and shell-style comments.
+    </para>
+
+    <para>
+      CTDB configuration variables are grouped into several categories below.
+    </para>
+
+    <para>
+      Variables defined in this document can also be set in a
+      distribution-specific configuration file such as
+      <filename>/etc/sysconfig/ctdb</filename> (Red Hat) or
+      <filename>/etc/default/ctdb</filename> (Debian).  However, these
+      files should be reserved for variables used by the initscript.
+      A historical alternative is
+      <filename>/usr/local/etc/ctdb/sysconfig/ctdb</filename> - this is
+      deprecated.
+    </para>
+
+  </refsect1>
+
+  <refsect1>
+    <title>
+      INITSCRIPT CONFIGURATION
+    </title>
+
+    <para>
+      Some options must be available to the initscript so they need to
+      be set in the distribution-specific initscript configuration,
+      such as <filename>/etc/sysconfig/ctdb</filename> or
+      <filename>/etc/default/ctdb</filename>.
+    </para>
+
+    <variablelist>
+
+      <varlistentry>
+	<term>CTDB_PIDFILE=<parameter>FILENAME</parameter></term>
+	<listitem>
+	  <para>
+	    FILENAME is the name of the file used to contain the
+	    process ID (PID) of the main CTDB daemon when it is
+	    running.  This is passed from the initscript to
+	    <citerefentry><refentrytitle>ctdbd_wrapper</refentrytitle>
+	    <manvolnum>1</manvolnum></citerefentry>.
+	  </para>
+
+	  <para>
+	    Default is <filename>/usr/local/var/run/ctdb/ctdbd.pid</filename>.
+	    Corresponds to <option>--pidfile</option>.
+	  </para>
+	</listitem>
+      </varlistentry>
+
+    </variablelist>
+  </refsect1>
+
+  <refsect1>
+    <title>
+      GLOBAL CONFIGURATION
+    </title>
+
+    <para>
+      These options may be used in the initscripts, daemon and
+      scripts.
+    </para>
+
+    <variablelist>
+
+      <varlistentry>
+	<term>CTDB_BASE=<parameter>DIRECTORY</parameter></term>
+	<listitem>
+	  <para>
+	    DIRECTORY containing CTDB scripts and configuration files.
+	  </para>
+	</listitem>
+      </varlistentry>
+
+    </variablelist>
+  </refsect1>
+
+  <refsect1>
+    <title>
+      DAEMON CONFIGURATION
+    </title>
+
+    <para>
+      Variables in this section are processed by
+      <citerefentry><refentrytitle>ctdbd_wrapper</refentrytitle>
+      <manvolnum>1</manvolnum></citerefentry> and are converted into
+      command-line arguments to
+      <citerefentry><refentrytitle>ctdbd</refentrytitle>
+      <manvolnum>1</manvolnum></citerefentry>.  Correspondence with
+      <citerefentry><refentrytitle>ctdbd</refentrytitle>
+      <manvolnum>1</manvolnum></citerefentry> options is shown for
+      each variable.  The the documentation for the relevant options
+      for more details.
+    </para>
+
+    <para>
+      Many of these variables are also used by event scripts.
+    </para>
+
+    <variablelist>
+
+      <varlistentry>
+	<term>CTDB_CAPABILITY_LMASTER=yes|no</term>
+	<listitem>
+	  <para>
+	    Defaults to yes.  Corresponds to <option>--no-lmaster</option>.
+	  </para>
+	</listitem>
+      </varlistentry>
+
+      <varlistentry>
+	<term>CTDB_CAPABILITY_RECMASTER=yes|no</term>
+	<listitem>
+	  <para>
+	    Defaults to yes.  Corresponds to
+	    <option>--no-recmaster</option>.
+	  </para>
+	</listitem>
+      </varlistentry>
+
+      <varlistentry>
+	<term>CTDB_DBDIR=<parameter>DIRECTORY</parameter></term>
+	<listitem>
+	  <para>
+	    Defaults to <filename>/usr/local/var/lib/ctdb</filename>.
+	  </para>
+	  <para>
+	    Apart from a DIRECTORY, this can take a special value of
+	    the form
+	    <option>tmpfs</option><optional>:<parameter>OPTIONS</parameter></optional>.
+	    OPTIONS is a comma-separated list of any permissible
+	    options to the tmpfs filesystem.  The only pre-specified
+	    default is <option>mode=700</option>, which can
+	    overriden by specifying <option>mode</option> in
+	    OPTIONS.  It probably makes sense to specify a maximum
+	    <option>size</option>.
+	  </para>
+	  <para>
+	    Corresponds to <option>--dbdir</option>.
+	  </para>
+	</listitem>
+      </varlistentry>
+
+      <varlistentry>
+	<term>CTDB_DBDIR_PERSISTENT=<parameter>DIRECTORY</parameter></term>
+	<listitem>
+	  <para>
+	    Defaults to <filename>/usr/local/var/lib/ctdb/persistent</filename>.
+	  </para>
+	  <para>
+	    Corresponds to <option>--dbdir-persistent</option>.
+	  </para>
+	</listitem>
+      </varlistentry>
+
+      <varlistentry>
+	<term>CTDB_DBDIR_STATE=<parameter>DIRECTORY</parameter></term>
+	<listitem>
+	  <para>
+	    Defaults to <filename>/usr/local/var/lib/ctdb/state</filename>.
+	  </para>
+	  <para>
+	    Corresponds to <option>--dbdir-state</option>.
+	  </para>
+	</listitem>
+      </varlistentry>
+
+      <varlistentry>
+	<term>CTDB_DEBUGLEVEL=<parameter>DEBUGLEVEL</parameter></term>
+	<listitem>
+	  <para>
+	    Default is NOTICE (2).  Corresponds to <option>-d</option> or
+	    <option>--debug</option>.
+	  </para>
+	</listitem>
+      </varlistentry>
+
+      <varlistentry>
+	<term>CTDB_EVENT_SCRIPT_DIR=<parameter>DIRECTORY</parameter></term>
+	<listitem>
+	  <para>
+	    Default is <varname>CTDB_BASE</varname>/events.d, so usually
+	    <filename>/usr/local/etc/ctdb/events.d</filename>.  Corresponds to
+	    <option>--event-script-dir</option>.
+	  </para>
+	</listitem>
+      </varlistentry>
+
+      <varlistentry>
+	<term>CTDB_LOGGING=<parameter>STRING</parameter></term>
+	<listitem>
+	  <para>
+	    STRING specifies where ctdbd will write its log. The
+	    default is
+	    file:<filename>/usr/local/var/log/log.ctdb</filename>.
+	    Corresponds to <option>--logging</option>.
+	  </para>
+	  <para>
+	    Valid values are:
+	  </para>
+	  <variablelist>
+	    <varlistentry>
+	      <term>file:<parameter>FILENAME</parameter></term>
+	      <listitem>
+		<para>
+		  FILENAME where ctdbd will write its log. This is usually
+		  <filename>/usr/local/var/log/log.ctdb</filename>.
+		</para>
+	      </listitem>
+	    </varlistentry>
+	    <varlistentry>
+	      <term>syslog<optional>:<parameter>METHOD</parameter></optional></term>
+              <listitem>
+                <para>
+		  CTDB will log to syslog.  By default this will use
+		  the syslog(3) API.
+                </para>
+		<para>
+		  If METHOD is specified then it specifies an
+		  extension that causes logging to be done in a
+		  non-blocking fashion.  This can be useful under
+		  heavy loads that might cause the syslog daemon to
+		  dequeue messages too slowly, which would otherwise
+		  cause CTDB to block when logging.  METHOD must be
+		  one of:
+		</para>
+		<variablelist>
+		  <varlistentry>
+		    <term>nonblocking</term>
+		    <listitem>
+		      <para>
+			CTDB will log to syslog via
+			<filename>/dev/log</filename> in non-blocking
+			mode.
+		      </para>
+		    </listitem>
+		  </varlistentry>
+		  <varlistentry>
+		    <term>udp</term>
+		    <listitem>
+		      <para>
+			CTDB will log to syslog via UDP to
+			localhost:514.  The syslog daemon must be
+			configured to listen on (at least)
+			localhost:514.  Most implementations will log
+			the messages against hostname "localhost" -
+			this is a limit of the implementation for
+			compatibility with more syslog daemon
+			implementations.
+		      </para>
+		    </listitem>
+		  </varlistentry>
+		  <varlistentry>
+		    <term>udp-rfc5424</term>
+		    <listitem>
+		      <para>
+			As with "udp" but messages are sent in RFC5424
+			format.  This method will log the correct
+			hostname but is not as widely implemented in
+			syslog daemons.
+		      </para>
+		    </listitem>
+		  </varlistentry>
+		</variablelist>
+	      </listitem>
+	    </varlistentry>
+	  </variablelist>
+	</listitem>
+      </varlistentry>
+
+      <varlistentry>
+	<term>CTDB_NODES=<parameter>FILENAME</parameter></term>
+	<listitem>
+	  <para>
+	    Default is <varname>CTDB_BASE</varname>/nodes, so usually
+	    <filename>/usr/local/etc/ctdb/nodes</filename>.  Corresponds to
+	    <option>--nlist</option>.
+	  </para>
+	</listitem>
+      </varlistentry>
+
+      <varlistentry>
+	<term>CTDB_NOSETSCHED=yes|no</term>
+	<listitem>
+	  <para>
+	    Defaults to no.  Corresponds to <option>--nosetsched</option>.
+	  </para>
+	  <para>
+	    Usually CTDB runs with real-time priority.	If you are running
+	    CTDB on a platform that does not support real-time priority,
+	    you can set this.
+	  </para>
+	</listitem>
+      </varlistentry>
+
+      <varlistentry>
+	<term>CTDB_NOTIFY_SCRIPT=<parameter>FILENAME</parameter></term>
+	<listitem>
+	  <para>
+	    No default, usually
+	    <filename>/usr/local/etc/ctdb/notify.sh</filename>.  Corresponds to
+	    <option>--notification-script</option>.
+	  </para>
+	</listitem>
+      </varlistentry>
+
+      <varlistentry>
+	<term>CTDB_MAX_PERSISTENT_CHECK_ERRORS=<parameter>NUM</parameter></term>
+	<listitem>
+	  <para>
+	    Default 0.  Corresponds to
+	    <option>--max-persistent-check-errors</option>.
+	  </para>
+	</listitem>
+      </varlistentry>
+
+      <varlistentry>
+	<term>CTDB_NODE_ADDRESS=<parameter>IPADDR</parameter></term>
+	<listitem>
+	  <para>
+	    IPADDR is the private IP address that ctdbd will bind to.
+	    Corresponds to <option>--listen</option>.
+	  </para>
+	  <para>
+	    By default ctdbd will select the first address from the
+	    nodes list that in can bind to.  See also
+	    <citetitle>CTDB_NODES</citetitle>.
+	  </para>
+	  <para>
+	    This option is only required when automatic address
+	    detection can not be used.  This can be the case when
+	    running multiple ctdbd daemons/nodes on the same physical
+	    host (usually for testing), using InfiniBand for the
+	    private network or on Linux when sysctl
+	    net.ipv4.ip_nonlocal_bind=1.
+	  </para>
+	</listitem>
+      </varlistentry>
+
+      <varlistentry>
+	<term>CTDB_PUBLIC_ADDRESSES=<parameter>FILENAME</parameter></term>
+	<listitem>
+	  <para>
+	    No default, usually
+	    <filename>/usr/local/etc/ctdb/public_addresses</filename>.
+	    Corresponds to <option>--public-addresses</option>.
+	  </para>
+	</listitem>
+      </varlistentry>
+
+      <varlistentry>
+	<term>CTDB_PUBLIC_INTERFACE=<parameter>INTERFACE</parameter></term>
+	<listitem>
+	  <para>
+	    No default.  Corresponds to
+	    <option>--public-interface</option>.
+	  </para>
+	</listitem>
+      </varlistentry>
+
+      <varlistentry>
+	<term>CTDB_RECOVERY_LOCK=<parameter>LOCK</parameter></term>
+	<listitem>
+	  <para>
+	    LOCK specifies the cluster-wide mutex used to detect and
+	    prevent a partitioned cluster (or "split brain").
+	  </para>
+	  <para>
+	    No default, but the default configuration file specifies
+	    <filename>/some/place/on/shared/storage</filename>, which
+	    should be change to a useful value.  Corresponds to
+	    <option>--reclock</option>.
+	  </para>
+	  <para>
+	    For information about the recovery lock please see the
+	    <citetitle>RECOVERY LOCK</citetitle> section in
+	    <citerefentry><refentrytitle>ctdb</refentrytitle>
+	    <manvolnum>7</manvolnum></citerefentry>.
+	  </para>
+	</listitem>
+      </varlistentry>
+
+      <varlistentry>
+	<term>CTDB_SCRIPT_LOG_LEVEL=<parameter>DEBUGLEVEL</parameter></term>
+	<listitem>
+	  <para>
+	    Defaults to ERR (0).  Corresponds to
+	    <option>--script-log-level</option>.
+	  </para>
+	</listitem>
+      </varlistentry>
+
+      <varlistentry>
+	<term>CTDB_SOCKET=<parameter>FILENAME</parameter></term>
+	<listitem>
+	  <para>
+	    Defaults to <filename>/usr/local/var/run/ctdb/ctdbd.socket</filename>.
+	    Corresponds to <option>--socket</option>.
+	  </para>
+	  <para>
+	    If you change this then you probably want to set this in
+	    root's environment (perhaps in a file in
+	    <filename>/etc/profile.d</filename>) so that you can use
+	    the <citerefentry><refentrytitle>ctdb</refentrytitle>
+	    <manvolnum>1</manvolnum></citerefentry> command in a
+	    straightforward manner.
+	  </para>
+	</listitem>
+      </varlistentry>
+
+      <varlistentry>
+	<term>CTDB_START_AS_DISABLED=yes|no</term>
+	<listitem>
+	  <para>
+	    Default is no.  Corresponds to
+	    <option>--start-as-disabled</option>.
+	  </para>
+	</listitem>
+      </varlistentry>
+
+      <varlistentry>
+	<term>CTDB_START_AS_STOPPED=yes|no</term>
+	<listitem>
+	  <para>
+	    Default is no.  Corresponds to
+	    <option>--start-as-stopped</option>.
+	  </para>
+	</listitem>
+      </varlistentry>
+
+      <varlistentry>
+	<term>CTDB_TRANSPORT=tcp|infiniband</term>
+	<listitem>
+	  <para>
+	    Defaults to tcp.  Corresponds to
+	    <option>--transport</option>.
+	  </para>
+	</listitem>
+      </varlistentry>
+
+    </variablelist>
+
+    <para>
+      While the following variables do not translate into daemon
+      options they are used by
+      <citerefentry><refentrytitle>ctdbd_wrapper</refentrytitle>
+      <manvolnum>1</manvolnum></citerefentry> when starting and
+      stopping <citerefentry><refentrytitle>ctdbd</refentrytitle>
+      <manvolnum>1</manvolnum></citerefentry>.
+    </para>
+
+    <variablelist>
+
+      <varlistentry>
+	<term>CTDB_SHUTDOWN_TIMEOUT=<parameter>NUM</parameter></term>
+	<listitem>
+	  <para>
+	    NUM is the number of seconds to wait for
+	    <citerefentry><refentrytitle>ctdbd</refentrytitle>
+	    <manvolnum>1</manvolnum></citerefentry> to shut down
+	    gracefully before giving up and killing it.
+	  </para>
+
+	  <para>
+	    Defaults is 30.
+	  </para>
+	</listitem>
+      </varlistentry>
+
+      <varlistentry>
+	<term>CTDB_STARTUP_TIMEOUT=<parameter>NUM</parameter></term>
+	<listitem>
+	  <para>
+	    NUM is the number of seconds to wait for
+	    <citerefentry><refentrytitle>ctdbd</refentrytitle>
+	    <manvolnum>1</manvolnum></citerefentry> complete early
+	    initialisation up to a point where it is unlikely to
+	    abort.  If <command>ctdbd</command> doesn't complete the
+	    "setup" event before this timeout then it is killed.
+	  </para>
+
+	  <para>
+	    Defaults is 10.
+	  </para>
+	</listitem>
+      </varlistentry>
+
+    </variablelist>
+  </refsect1>
+
+  <refsect1>
+    <title>NETWORK CONFIGURATION</title>
+
+    <refsect2>
+      <title>NAT GATEWAY</title>
+
+      <para>
+	NAT gateway is used to configure fallback routing for nodes
+	when they do not host any public IP addresses.  For example,
+	it allows unhealthy nodes to reliably communicate with
+	external infrastructure.  One node in a NAT gateway group will
+	be designated as the NAT gateway master node and other (slave)
+	nodes will be configured with fallback routes via the NAT
+	gateway master node.  For more information, see the
+	<citetitle>NAT GATEWAY</citetitle> section in
+	<citerefentry><refentrytitle>ctdb</refentrytitle>
+	<manvolnum>7</manvolnum></citerefentry>.
+      </para>
+
+      <variablelist>
+
+	<varlistentry>
+	  <term>CTDB_NATGW_DEFAULT_GATEWAY=<parameter>IPADDR</parameter></term>
+	  <listitem>
+	    <para>
+	      IPADDR is an alternate network gateway to use on the NAT
+	      gateway master node.  If set, a fallback default route
+	      is added via this network gateway.
+	    </para>
+	    <para>
+	      No default.  Setting this variable is optional - if not
+	      set that no route is created on the NAT gateway master
+	      node.
+	    </para>
+	  </listitem>
+	</varlistentry>
+
+	<varlistentry>
+	  <term>CTDB_NATGW_NODES=<parameter>FILENAME</parameter></term>
+	  <listitem>
+	    <para>
+	      FILENAME contains the list of nodes that belong to the
+	      same NAT gateway group.
+	    </para>
+	    <para>
+	      File format:
+	      <screen>
+<parameter>IPADDR</parameter> <optional>slave-only</optional>
+	      </screen>
+	    </para>
+	    <para>
+	      IPADDR is the private IP address of each node in the NAT
+	      gateway group.
+	    </para>
+	    <para>
+	      If "slave-only" is specified then the corresponding node
+	      can not be the NAT gateway master node.  In this case
+	      <varname>CTDB_NATGW_PUBLIC_IFACE</varname> and
+	      <varname>CTDB_NATGW_PUBLIC_IP</varname> are optional and
+	      unused.
+	    </para>
+	    <para>
+	      No default, usually
+	      <filename>/usr/local/etc/ctdb/natgw_nodes</filename> when enabled.
+	    </para>
+	  </listitem>
+	</varlistentry>
+
+	<varlistentry>
+	  <term>CTDB_NATGW_PRIVATE_NETWORK=<parameter>IPADDR/MASK</parameter></term>
+	  <listitem>
+	    <para>
+	      IPADDR/MASK is the private sub-network that is
+	      internally routed via the NAT gateway master node.  This
+	      is usually the private network that is used for node
+	      addresses.
+	    </para>
+	    <para>
+	      No default.
+	    </para>
+	  </listitem>
+	</varlistentry>
+
+	<varlistentry>
+	  <term>CTDB_NATGW_PUBLIC_IFACE=<parameter>IFACE</parameter></term>
+	  <listitem>
+	    <para>
+	      IFACE is the network interface on which the
+	      CTDB_NATGW_PUBLIC_IP will be configured.
+	    </para>
+	    <para>
+	      No default.
+	    </para>
+	  </listitem>
+	</varlistentry>
+
+	<varlistentry>
+	  <term>CTDB_NATGW_PUBLIC_IP=<parameter>IPADDR/MASK</parameter></term>
+	  <listitem>
+	    <para>
+	      IPADDR/MASK indicates the IP address that is used for
+	      outgoing traffic (originating from
+	      CTDB_NATGW_PRIVATE_NETWORK) on the NAT gateway master
+	      node.  This <emphasis>must not</emphasis> be a
+	      configured public IP address.
+	    </para>
+	    <para>
+	      No default.
+	    </para>
+	  </listitem>
+	</varlistentry>
+
+	<varlistentry>
+	  <term>CTDB_NATGW_STATIC_ROUTES=<parameter>IPADDR/MASK[@GATEWAY]</parameter> ...</term>
+	  <listitem>
+	    <para>
+	      Each IPADDR/MASK identifies a network or host to which
+	      NATGW should create a fallback route, instead of
+	      creating a single default route.  This can be used when
+	      there is already a default route, via an interface that
+	      can not reach required infrastructure, that overrides
+	      the NAT gateway default route.
+	    </para>
+	    <para>
+	      If GATEWAY is specified then the corresponding route on
+	      the NATGW master node will be via GATEWAY.  Such routes
+	      are created even if
+	      <varname>CTDB_NATGW_DEFAULT_GATEWAY</varname> is not
+	      specified.  If GATEWAY is not specified for some
+	      networks then routes are only created on the NATGW
+	      master node for those networks if
+	      <varname>CTDB_NATGW_DEFAULT_GATEWAY</varname> is
+	      specified.
+	    </para>
+	    <para>
+	      This should be used with care to avoid causing traffic
+	      to unnecessarily double-hop through the NAT gateway
+	      master, even when a node is hosting public IP addresses.
+	      Each specified network or host should probably have a
+	      corresponding automatically created link route or static
+	      route to avoid this.
+	    </para>
+	    <para>
+	      No default.
+	    </para>
+	  </listitem>
+	</varlistentry>
+
+      </variablelist>
+
+      <refsect3>
+	<title>Example</title>
+	<screen>
+CTDB_NATGW_NODES=/usr/local/etc/ctdb/natgw_nodes
+CTDB_NATGW_PRIVATE_NETWORK=192.168.1.0/24
+CTDB_NATGW_DEFAULT_GATEWAY=10.0.0.1
+CTDB_NATGW_PUBLIC_IP=10.0.0.227/24
+CTDB_NATGW_PUBLIC_IFACE=eth0
+	</screen>
+
+	<para>
+	  A variation that ensures that infrastructure (ADS, DNS, ...)
+	  directly attached to the public network (10.0.0.0/24) is
+	  always reachable would look like this:
+	</para>
+	<screen>
+CTDB_NATGW_NODES=/usr/local/etc/ctdb/natgw_nodes
+CTDB_NATGW_PRIVATE_NETWORK=192.168.1.0/24
+CTDB_NATGW_PUBLIC_IP=10.0.0.227/24
+CTDB_NATGW_PUBLIC_IFACE=eth0
+CTDB_NATGW_STATIC_ROUTES=10.0.0.0/24
+	</screen>
+	<para>
+	  Note that <varname>CTDB_NATGW_DEFAULT_GATEWAY</varname> is
+	  not specified.
+	</para>
+      </refsect3>
+
+    </refsect2>
+
+    <refsect2>
+      <title>POLICY ROUTING</title>
+
+      <para>
+	A node running CTDB may be a component of a complex network
+	topology.  In particular, public addresses may be spread
+	across several different networks (or VLANs) and it may not be
+	possible to route packets from these public addresses via the
+	system's default route.  Therefore, CTDB has support for
+	policy routing via the <filename>13.per_ip_routing</filename>
+	eventscript.  This allows routing to be specified for packets
+	sourced from each public address.  The routes are added and
+	removed as CTDB moves public addresses between nodes.
+      </para>
+
+      <para>
+	For more information, see the <citetitle>POLICY
+	ROUTING</citetitle> section in
+	<citerefentry><refentrytitle>ctdb</refentrytitle>
+	<manvolnum>7</manvolnum></citerefentry>.
+      </para>
+
+      <variablelist>
+	<varlistentry>
+	  <term>CTDB_PER_IP_ROUTING_CONF=<parameter>FILENAME</parameter></term>
+	  <listitem>
+	    <para>
+	      FILENAME contains elements for constructing the desired
+	      routes for each source address.
+	    </para>
+
+	    <para>
+	      The special FILENAME value
+	      <constant>__auto_link_local__</constant> indicates that no
+	      configuration file is provided and that CTDB should
+	      generate reasonable link-local routes for each public IP
+	      address.
+	    </para>
+
+	    <para>
+	      File format:
+	      <screen>
+<parameter>IPADDR</parameter> <parameter>DEST-IPADDR/MASK</parameter> <optional><parameter>GATEWAY-IPADDR</parameter></optional>
+	      </screen>
+	    </para>
+
+	    <para>
+	      No default, usually
+	      <filename>/usr/local/etc/ctdb/policy_routing</filename> when enabled.
+	    </para>
+	  </listitem>
+	</varlistentry>
+
+	<varlistentry>
+	  <term>CTDB_PER_IP_ROUTING_RULE_PREF=<parameter>NUM</parameter></term>
+	<listitem>
+	  <para>
+	    NUM sets the priority (or preference) for the routing
+	    rules that are added by CTDB.
+	  </para>
+
+	  <para>
+	    This should be (strictly) greater than 0 and (strictly)
+	    less than 32766.  A priority of 100 is recommended, unless
+	    this conflicts with a priority already in use on the
+	    system.  See
+	    <citerefentry><refentrytitle>ip</refentrytitle>
+	    <manvolnum>8</manvolnum></citerefentry>, for more details.
+	  </para>
+	</listitem>
+	</varlistentry>
+
+	<varlistentry>
+	  <term>
+	    CTDB_PER_IP_ROUTING_TABLE_ID_LOW=<parameter>LOW-NUM</parameter>,
+	    CTDB_PER_IP_ROUTING_TABLE_ID_HIGH=<parameter>HIGH-NUM</parameter>
+	  </term>
+	  <listitem>
+	    <para>
+	      CTDB determines a unique routing table number to use for
+	      the routing related to each public address.  LOW-NUM and
+	      HIGH-NUM indicate the minimum and maximum routing table
+	      numbers that are used.
+	    </para>
+
+	    <para>
+	      <citerefentry><refentrytitle>ip</refentrytitle>
+	      <manvolnum>8</manvolnum></citerefentry> uses some
+	      reserved routing table numbers below 255.  Therefore,
+	      CTDB_PER_IP_ROUTING_TABLE_ID_LOW should be (strictly)
+	      greater than 255.
+	    </para>
+
+	    <para>
+	      CTDB uses the standard file
+	      <filename>/etc/iproute2/rt_tables</filename> to maintain
+	      a mapping between the routing table numbers and labels.
+	      The label for a public address
+	      <replaceable>ADDR</replaceable> will look like
+	      ctdb.<replaceable>addr</replaceable>.  This means that
+	      the associated rules and routes are easy to read (and
+	      manipulate).
+	    </para>
+
+	    <para>
+	      No default, usually 1000 and 9000.
+	    </para>
+	  </listitem>
+	</varlistentry>
+      </variablelist>
+
+      <refsect3>
+	<title>Example</title>
+	<screen>
+CTDB_PER_IP_ROUTING_CONF=/usr/local/etc/ctdb/policy_routing
+CTDB_PER_IP_ROUTING_RULE_PREF=100
+CTDB_PER_IP_ROUTING_TABLE_ID_LOW=1000
+CTDB_PER_IP_ROUTING_TABLE_ID_HIGH=9000
+	</screen>
+      </refsect3>
+
+    </refsect2>
+
+    <refsect2>
+      <title>LVS</title>
+
+      <para>
+	For a general description see the <citetitle>LVS</citetitle>
+	section in <citerefentry><refentrytitle>ctdb</refentrytitle>
+	<manvolnum>7</manvolnum></citerefentry>.
+      </para>
+
+      <refsect3>
+	<title>Eventscript</title>
+
+	<simplelist>
+	  <member><filename>91.lvs</filename></member>
+	</simplelist>
+      </refsect3>
+
+      <variablelist>
+
+	<varlistentry>
+	  <term>CTDB_LVS_NODES=<parameter>FILENAME</parameter></term>
+	  <listitem>
+	    <para>
+	      FILENAME contains the list of nodes that belong to the
+	      same LVS group.
+	    </para>
+	    <para>
+	      File format:
+	      <screen>
+<parameter>IPADDR</parameter> <optional>slave-only</optional>
+	      </screen>
+	    </para>
+	    <para>
+	      IPADDR is the private IP address of each node in the LVS
+	      group.
+	    </para>
+	    <para>
+	      If "slave-only" is specified then the corresponding node
+	      can not be the LVS master node.  In this case
+	      <varname>CTDB_LVS_PUBLIC_IFACE</varname> and
+	      <varname>CTDB_LVS_PUBLIC_IP</varname> are optional and
+	      unused.
+	    </para>
+	    <para>
+	      No default, usually
+	      <filename>/usr/local/etc/ctdb/lvs_nodes</filename> when enabled.
+	    </para>
+	  </listitem>
+	</varlistentry>
+
+	<varlistentry>
+	  <term>CTDB_LVS_PUBLIC_IFACE=<parameter>INTERFACE</parameter></term>
+	  <listitem>
+	    <para>
+	      INTERFACE is the network interface that clients will use
+	      to connection to <varname>CTDB_LVS_PUBLIC_IP</varname>.
+	      This is optional for slave-only nodes.
+	      No default.
+	    </para>
+	  </listitem>
+	</varlistentry>
+
+	<varlistentry>
+	  <term>CTDB_LVS_PUBLIC_IP=<parameter>IPADDR</parameter></term>
+	  <listitem>
+	    <para>
+	      CTDB_LVS_PUBLIC_IP is the LVS public address.  No
+	      default.
+	  </para>
+	  </listitem>
+	</varlistentry>
+
+      </variablelist>
+    </refsect2>
+
+    <refsect2>
+      <title>MISCELLANEOUS NETWORK CONFIGURATION</title>
+
+      <variablelist>
+
+	<varlistentry>
+	  <term>CTDB_PARTIALLY_ONLINE_INTERFACES=yes|no</term>
+	  <listitem>
+	    <para>
+	      Whether one or more offline interfaces should cause a
+	      monitor event to fail if there are other interfaces that
+	      are up.  If this is "yes" and a node has some interfaces
+	      that are down then <command>ctdb status</command> will
+	      display the node as "PARTIALLYONLINE".
+	    </para>
+
+	    <para>
+	      Note that CTDB_PARTIALLY_ONLINE_INTERFACES=yes is
+	      incompatible with NAT gateway, since NAT gateway relies
+	      on the interface configured by CTDB_NATGW_PUBLIC_IFACE
+	      to be up.
+	    </para>
+
+	    <para>
+	      Default is "no".
+	    </para>
+	  </listitem>
+	</varlistentry>
+
+      </variablelist>
+    </refsect2>
+
+  </refsect1>
+
+  <refsect1>
+    <title>SERVICE CONFIGURATION</title>
+
+    <para>
+      CTDB can be configured to manage and/or monitor various NAS (and
+      other) services via its eventscripts.
+    </para>
+
+    <para>
+      In the simplest case CTDB will manage a service.  This means the
+      service will be started and stopped along with CTDB, CTDB will
+      monitor the service and CTDB will do any required
+      reconfiguration of the service when public IP addresses are
+      failed over.
+    </para>
+
+    <refsect2>
+      <title>SAMBA</title>
+
+      <refsect3>
+	<title>Eventscripts</title>
+
+	<simplelist>
+	  <member><filename>49.winbind</filename></member>
+	  <member><filename>50.samba</filename></member>
+	</simplelist>
+      </refsect3>
+
+      <variablelist>
+
+	<varlistentry>
+	  <term>CTDB_MANAGES_SAMBA=yes|no</term>
+	  <listitem>
+	    <para>
+	      Should CTDB manage Samba?
+	    </para>
+	    <para>
+	      Default is no.
+	    </para>
+	  </listitem>
+	</varlistentry>
+
+	<varlistentry>
+	  <term>CTDB_MANAGES_WINBIND=yes|no</term>
+	  <listitem>
+	    <para>
+	      Should CTDB manage Winbind?
+	    </para>
+	    <para>
+	      Default is no.
+	    </para>
+	  </listitem>
+	</varlistentry>
+
+	<varlistentry>
+	  <term>CTDB_SAMBA_CHECK_PORTS=<parameter>PORT-LIST</parameter></term>
+	  <listitem>
+	    <para>
+	      When monitoring Samba, check TCP ports in
+	      space-separated PORT-LIST.
+	    </para>
+	    <para>
+	      Default is to monitor ports that Samba is configured to listen on.
+	    </para>
+	  </listitem>
+	</varlistentry>
+
+	<varlistentry>
+	  <term>CTDB_SAMBA_SKIP_SHARE_CHECK=yes|no</term>
+	  <listitem>
+	    <para>
+	      As part of monitoring, should CTDB skip the check for
+	      the existence of each directory configured as share in
+	      Samba.  This may be desirable if there is a large number
+	      of shares.
+	    </para>
+	    <para>
+	      Default is no.
+	    </para>
+	  </listitem>
+	</varlistentry>
+
+	<varlistentry>
+	  <term>CTDB_SERVICE_NMB=<parameter>SERVICE</parameter></term>
+	  <listitem>
+	    <para>
+	      Distribution specific SERVICE for managing nmbd.
+	    </para>
+	    <para>
+	      Default is distribution-dependant.
+	    </para>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term>CTDB_SERVICE_SMB=<parameter>SERVICE</parameter></term>
+	  <listitem>
+	    <para>
+	      Distribution specific SERVICE for managing smbd.
+	    </para>
+	    <para>
+	      Default is distribution-dependant.
+	    </para>
+	  </listitem>
+	</varlistentry>
+
+	<varlistentry>
+	  <term>CTDB_SERVICE_WINBIND=<parameter>SERVICE</parameter></term>
+	  <listitem>
+	    <para>
+	      Distribution specific SERVICE for managing winbindd.
+	    </para>
+	    <para>
+	      Default is "winbind".
+	    </para>
+	  </listitem>
+	</varlistentry>
+
+      </variablelist>
+
+    </refsect2>
+
+    <refsect2>
+      <title>NFS</title>
+
+      <para>
+	This includes parameters for the kernel NFS server.
+	Alternative NFS subsystems (such as <ulink
+	url="https://github.com/nfs-ganesha/nfs-ganesha/wiki">NFS-Ganesha</ulink>)
+	can be integrated using <varname>CTDB_NFS_CALLOUT</varname>.
+      </para>
+
+      <refsect3>
+	<title>Eventscript</title>
+
+	<simplelist>
+	  <member><filename>60.nfs</filename></member>
+	</simplelist>
+      </refsect3>
+
+      <variablelist>
+
+	<varlistentry>
+	  <term>CTDB_MANAGES_NFS=yes|no</term>
+	  <listitem>
+	    <para>
+	      Should CTDB manage NFS?
+	    </para>
+	    <para>
+	      Default is no.
+	    </para>
+	  </listitem>
+	</varlistentry>
+
+	<varlistentry>
+	  <term>CTDB_NFS_CALLOUT=<parameter>COMMAND</parameter></term>
+	  <listitem>
+	    <para>
+	      COMMAND specifies the path to a callout to handle
+	      interactions with the configured NFS system, including
+	      startup, shutdown, monitoring.
+	    </para>
+	    <para>
+	      Default is the included
+	      <command>nfs-linux-kernel-callout</command>.
+	    </para>
+	  </listitem>
+	</varlistentry>
+
+	<varlistentry>
+	  <term>CTDB_NFS_SKIP_SHARE_CHECK=yes|no</term>
+	  <listitem>
+	    <para>
+	      As part of monitoring, should CTDB skip the check for
+	      the existence of each directory exported via NFS.  This
+	      may be desirable if there is a large number of exports.
+	    </para>
+	    <para>
+	      Default is no.
+	    </para>
+	  </listitem>
+	</varlistentry>
+
+	<varlistentry>
+	  <term>CTDB_RPCINFO_LOCALHOST=<parameter>IPADDR</parameter>|<parameter>HOSTNAME</parameter></term>
+	  <listitem>
+	    <para>
+	      IPADDR or HOSTNAME indicates the address that
+	      <command>rpcinfo</command> should connect to when doing
+	      <command>rpcinfo</command> check on IPv4 RPC service during
+	      monitoring.  Optimally this would be "localhost".
+	      However, this can add some performance overheads.
+	    </para>
+	    <para>
+	      Default is "127.0.0.1".
+	    </para>
+	  </listitem>
+	</varlistentry>
+
+	<varlistentry>
+	  <term>CTDB_RPCINFO_LOCALHOST6=<parameter>IPADDR</parameter>|<parameter>HOSTNAME</parameter></term>
+	  <listitem>
+	    <para>
+	      IPADDR or HOSTNAME indicates the address that
+	      <command>rpcinfo</command> should connect to when doing
+	      <command>rpcinfo</command> check on IPv6 RPC service
+	      during monitoring.  Optimally this would be "localhost6"
+	      (or similar).  However, this can add some performance
+	      overheads.
+	    </para>
+	    <para>
+	      Default is "::1".
+	    </para>
+	  </listitem>
+	</varlistentry>
+
+	<varlistentry>
+	  <term>CTDB_NFS_STATE_FS_TYPE=<parameter>TYPE</parameter></term>
+	  <listitem>
+	    <para>
+	      The type of filesystem used for a clustered NFS' shared
+	      state. No default.
+	    </para>
+	  </listitem>
+	</varlistentry>
+
+	<varlistentry>
+	  <term>CTDB_NFS_STATE_MNT=<parameter>DIR</parameter></term>
+	  <listitem>
+	    <para>
+	      The directory where a clustered NFS' shared state will be
+	      located. No default.
+	    </para>
+	  </listitem>
+	</varlistentry>
+
+      </variablelist>
+
+    </refsect2>
+
+    <refsect2>
+      <title>APACHE HTTPD</title>
+
+      <para>
+	CTDB can manage the Apache web server.
+      </para>
+
+      <refsect3>
+	<title>Eventscript</title>
+
+	<simplelist>
+	  <member><filename>41.httpd</filename></member>
+	</simplelist>
+      </refsect3>
+
+      <variablelist>
+	<varlistentry>
+	  <term>CTDB_MANAGES_HTTPD=yes|no</term>
+	  <listitem>
+	    <para>
+	      Should CTDB manage the Apache web server?
+	    </para>
+	    <para>
+	      Default is no.
+	    </para>
+	  </listitem>
+	</varlistentry>
+      </variablelist>
+    </refsect2>
+
+    <refsect2>
+      <title>CLAMAV</title>
+
+      <para>
+	CTDB has support to manage the popular anti-virus daemon
+	ClamAV.
+      </para>
+
+      <refsect3>
+	<title>Eventscript</title>
+
+	<simplelist>
+	  <member><filename>31.clamd</filename></member>
+	</simplelist>
+
+	<para>
+	  This eventscript is not enabled by default.  Use
+	  <command>ctdb enablescript</command> to enable it.
+	</para>
+
+      </refsect3>
+
+      <variablelist>
+
+	<varlistentry>
+	  <term>CTDB_MANAGES_CLAMD=yes|no</term>
+	  <listitem>
+	    <para>
+	      Should CTDB manage ClamAV?
+	    </para>
+	    <para>
+	      Default is no.
+	    </para>
+	  </listitem>
+	</varlistentry>
+
+	<varlistentry>
+	  <term>CTDB_CLAMD_SOCKET=<parameter>FILENAME</parameter></term>
+	  <listitem>
+	    <para>
+	      FILENAME is the socket to monitor ClamAV.
+	    </para>
+	    <para>
+	      No default.
+	    </para>
+	  </listitem>
+	</varlistentry>
+
+      </variablelist>
+
+    </refsect2>
+
+    <refsect2>
+      <title>ISCSI</title>
+
+      <para>
+	CTDB has support for managing the Linux iSCSI tgtd service.
+      </para>
+
+      <refsect3>
+	<title>Eventscript</title>
+
+	<simplelist>
+	  <member><filename>70.iscsi</filename></member>
+	</simplelist>
+      </refsect3>
+
+      <variablelist>
+
+	<varlistentry>
+	  <term>CTDB_MANAGES_ISCSI=yes|no</term>
+	  <listitem>
+	    <para>
+	      Should CTDB manage iSCSI tgtd?
+	    </para>
+	    <para>
+	      Default is no.
+	    </para>
+	  </listitem>
+	</varlistentry>
+
+	<varlistentry>
+	  <term>CTDB_START_ISCSI_SCRIPTS=<parameter>DIRECTORY</parameter></term>
+	  <listitem>
+	    <para>
+	      DIRECTORY on shared storage containing scripts to start
+	      tgtd for each public IP address.
+	    </para>
+	    <para>
+	      No default.
+	    </para>
+	  </listitem>
+	</varlistentry>
+      </variablelist>
+    </refsect2>
+
+    <refsect2>
+      <title>MULTIPATHD</title>
+
+      <para>
+	CTDB can monitor multipath devices to ensure that active paths
+	are available.
+      </para>
+
+      <refsect3>
+	<title>Eventscript</title>
+
+	<simplelist>
+	  <member><filename>20.multipathd</filename></member>
+	</simplelist>
+
+	<para>
+	  This eventscript is not enabled by default.  Use
+	  <command>ctdb enablescript</command> to enable it.
+	</para>
+      </refsect3>
+
+      <variablelist>
+	<varlistentry>
+	  <term>CTDB_MONITOR_MPDEVICES=<parameter>MP-DEVICE-LIST</parameter></term>
+	  <listitem>
+	    <para>
+	      MP-DEVICE-LIST is a list of multipath devices for CTDB to monitor?
+	    </para>
+	    <para>
+	      No default.
+	    </para>
+	  </listitem>
+	</varlistentry>
+      </variablelist>
+    </refsect2>
+
+    <refsect2>
+      <title>VSFTPD</title>
+
+      <para>
+	CTDB can manage the vsftpd FTP server.
+      </para>
+
+      <refsect3>
+	<title>Eventscript</title>
+
+	<simplelist>
+	  <member><filename>40.vsftpd</filename></member>
+	</simplelist>
+      </refsect3>
+
+      <variablelist>
+	<varlistentry>
+	  <term>CTDB_MANAGES_VSFTPD=yes|no</term>
+	  <listitem>
+	    <para>
+	      Should CTDB manage the vsftpd FTP server?
+	    </para>
+	    <para>
+	      Default is no.
+	    </para>
+	  </listitem>
+	</varlistentry>
+      </variablelist>
+    </refsect2>
+
+    <refsect2>
+      <title>
+	SYSTEM RESOURCE MONITORING CONFIGURATION
+      </title>
+
+      <para>
+	CTDB can experience seemingly random (performance and other)
+	issues if system resources become too constrained.  Options in
+	this section can be enabled to allow certain system resources
+	to be checked.  They allows warnings to be logged and nodes to
+	be marked unhealthy when system resource usage reaches the
+	configured thresholds.
+      </para>
+
+      <para>
+	Some checks are enabled by default.  It is recommended that
+	these checks remain enabled or are augmented by extra checks.
+	There is no supported way of completely disabling the checks.
+      </para>
+
+      <refsect3>
+	<title>Eventscripts</title>
+
+	<simplelist>
+	  <member><filename>05.system</filename></member>
+	</simplelist>
+
+	<para>
+	  Filesystem and memory usage monitoring is in
+	  <filename>05.system</filename>.
+	</para>
+      </refsect3>
+
+      <variablelist>
+
+	<varlistentry>
+	  <term>CTDB_MONITOR_FILESYSTEM_USAGE=<parameter>FS-LIMIT-LIST</parameter></term>
+	  <listitem>
+	    <para>
+	      FS-LIMIT-LIST is a space-separated list of
+	      <parameter>FILESYSTEM</parameter>:<parameter>WARN_LIMIT</parameter><optional>:<parameter>UNHEALTHY_LIMIT</parameter></optional>
+	      triples indicating that warnings should be logged if the
+	      space used on FILESYSTEM reaches WARN_LIMIT%.  If usage
+	      reaches UNHEALTHY_LIMIT then the node should be flagged
+	      unhealthy.  Either WARN_LIMIT or UNHEALTHY_LIMIT may be
+	      left blank, meaning that check will be omitted.
+	    </para>
+
+	    <para>
+	      Default is to warn for each filesystem containing a
+	      database directory (<envar>CTDB_DBDIR</envar>,
+	      <envar>CTDB_DBDIR_PERSISTENT</envar>,
+	      <envar>CTDB_DBDIR_STATE</envar>) with a threshold of
+	      90%.
+	    </para>
+	  </listitem>
+	</varlistentry>
+
+	<varlistentry>
+	  <term>CTDB_MONITOR_MEMORY_USAGE=<parameter>MEM-LIMITS</parameter></term>
+	  <listitem>
+	    <para>
+	      MEM-LIMITS takes the form
+	      <parameter>WARN_LIMIT</parameter><optional>:<parameter>UNHEALTHY_LIMIT</parameter></optional>
+	      indicating that warnings should be logged if memory
+	      usage reaches WARN_LIMIT%.  If usage reaches
+	      UNHEALTHY_LIMIT then the node should be flagged
+	      unhealthy.  Either WARN_LIMIT or UNHEALTHY_LIMIT may be
+	      left blank, meaning that check will be omitted.
+	    </para>
+	    <para>
+	      Default is 80, so warnings will be logged when memory
+	      usage reaches 80%.
+	    </para>
+	  </listitem>
+	</varlistentry>
+
+	<varlistentry>
+	  <term>CTDB_MONITOR_SWAP_USAGE=<parameter>SWAP-LIMITS</parameter></term>
+	  <listitem>
+	    <para>
+	      SWAP-LIMITS takes the form
+	      <parameter>WARN_LIMIT</parameter><optional>:<parameter>UNHEALTHY_LIMIT</parameter></optional>
+	       indicating that warnings should be logged if
+	      swap usage reaches WARN_LIMIT%.  If usage reaches
+	      UNHEALTHY_LIMIT then the node should be flagged
+	      unhealthy.  Either WARN_LIMIT or UNHEALTHY_LIMIT may be
+	      left blank, meaning that check will be omitted.
+	    </para>
+	    <para>
+	      Default is 25, so warnings will be logged when swap
+	      usage reaches 25%.
+	    </para>
+	  </listitem>
+	</varlistentry>
+
+      </variablelist>
+    </refsect2>
+
+    <refsect2>
+      <title>MISCELLANEOUS SERVICE-RELATED CONFIGURATION</title>
+
+      <variablelist>
+
+	<varlistentry>
+	  <term>CTDB_MANAGED_SERVICES=<parameter>SERVICE-LIST</parameter></term>
+	  <listitem>
+	    <para>
+	      SERVICE-LIST is a space-separated list of SERVICEs that
+	      CTDB should manage.  This can be used as an alternative
+	      to the
+	      <varname>CTDB_MANAGES_<replaceable>SERVICE</replaceable></varname>
+	      variables.
+	    </para>
+	    <para>
+	      No default.
+	    </para>
+	  </listitem>
+	</varlistentry>
+
+	<varlistentry>
+	  <term>CTDB_SERVICE_AUTOSTARTSTOP=yes|no</term>
+	  <listitem>
+	    <para>
+	      When CTDB should start and stop services if they become
+	      managed or unmanaged.
+	    </para>
+	    <para>
+	      Default is no.
+	    </para>
+	  </listitem>
+	</varlistentry>
+
+      </variablelist>
+
+    </refsect2>
+
+  </refsect1>
+
+  <refsect1>
+    <title>
+      TUNABLES CONFIGURATION
+    </title>
+
+    <para>
+      CTDB tunables (see
+      <citerefentry><refentrytitle>ctdbd-tunables</refentrytitle>
+      <manvolnum>7</manvolnum></citerefentry>) can be set from the
+      configuration file.  They are set as follows:
+
+      <literallayout>
+CTDB_SET_<replaceable>TUNABLE</replaceable>=<replaceable>VALUE</replaceable>
+      </literallayout>
+    </para>
+
+    <para>
+      For example:
+
+      <screen format="linespecific">
+CTDB_SET_MonitorInterval=20
+      </screen>
+    </para>
+  </refsect1>
+
+  <refsect1>
+    <title>
+      DEBUG AND TEST
+    </title>
+
+    <para>
+      Variable in this section are for debugging and testing CTDB.
+      They should not generally be needed.
+    </para>
+
+    <variablelist>
+
+      <varlistentry>
+	<term>CTDB_DEBUG_HUNG_SCRIPT=<parameter>FILENAME</parameter></term>
+	<listitem>
+	  <para>
+	    FILENAME is a script to run to log debug information when
+	    an event script times out.
+	  </para>
+	  <para>
+	    Default is <filename><varname>CTDB_BASE</varname>/debug-hung-script.sh</filename>.
+	  </para>
+	</listitem>
+      </varlistentry>
+
+      <varlistentry>
+	<term>CTDB_DEBUG_HUNG_SCRIPT_LOGFILE=<parameter>FILENAME</parameter></term>
+	<listitem>
+	  <para>
+	    FILENAME specifies where log messages should go when
+	    debugging hung eventscripts.  This is a testing option.
+	    See also <citetitle>CTDB_DEBUG_HUNG_SCRIPT</citetitle>.
+	  </para>
+	  <para>
+	    No default.  Messages go to stdout/stderr and are logged
+	    to the same place as other CTDB log messages.
+	  </para>
+	</listitem>
+      </varlistentry>
+
+      <varlistentry>
+	<term>CTDB_DEBUG_HUNG_SCRIPT_STACKPAT=<parameter>REGEXP</parameter></term>
+	<listitem>
+	  <para>
+	    REGEXP specifies interesting processes for which stack
+	    traces should be logged when debugging hung eventscripts
+	    and those processes are matched in pstree output.  REGEXP
+	    is an extended regexp so choices are separated by pipes
+	    ('|').  However, REGEXP should not contain parentheses.
+	    See also <citetitle>CTDB_DEBUG_HUNG_SCRIPT</citetitle>.
+	  </para>
+	  <para>
+	    Default is "exportfs|rpcinfo".
+	  </para>
+	</listitem>
+      </varlistentry>
+
+      <varlistentry>
+	<term>CTDB_DEBUG_LOCKS=<parameter>FILENAME</parameter></term>
+	<listitem>
+	  <para>
+	    FILENAME is a script to run to log debug information when
+	    an CTDB fails to freeze databases during recovery.
+	  </para>
+	  <para>
+	    No default, usually
+	    <filename><varname>CTDB_BASE</varname>/debug_locks.sh</filename>.
+	  </para>
+	</listitem>
+      </varlistentry>
+
+      <varlistentry>
+	<term>CTDB_SYS_ETCDIR=<parameter>DIRECTORY</parameter></term>
+	<listitem>
+	  <para>
+	    DIRECTORY containing system configuration files.  This is
+	    used to provide alternate configuration when testing and
+	    should not need to be changed from the default.
+	  </para>
+	  <para>
+	    Default is <filename>/etc</filename>.
+	  </para>
+	</listitem>
+      </varlistentry>
+
+      <varlistentry>
+	<term>CTDB_INIT_STYLE=debian|redhat|suse</term>
+	<listitem>
+	  <para>
+	    This is the init style used by the Linux distribution (or
+	    other operating system) being used.  This is usually
+	    determined dynamically by checking the system.  This
+	    variable is used by the initscript to determine which init
+	    system primitives to use.  It is also used by some
+	    eventscripts to choose the name of initscripts for certain
+	    services, since these can vary between distributions.
+	  </para>
+	  <para>
+	    No fixed default.
+	  </para>
+	  <para>
+	    If this option needs to be changed from the calculated
+	    default for the initscript to function properly, then it
+	    must be set in the distribution-specific initscript
+	    configuration, such as
+	    <filename>/etc/sysconfig/ctdb</filename>
+	  </para>
+	</listitem>
+      </varlistentry>
+
+      <varlistentry>
+	<term>CTDB_MAX_CORRUPT_DB_BACKUPS=<parameter>NUM</parameter></term>
+	<listitem>
+	  <para>
+	    NUM is the maximum number of volatile TDB database backups
+	    to be kept (for each database) when a corrupt database is
+	    found during startup.  Volatile TDBs are zeroed during
+	    startup so backups are needed to debug any corruption that
+	    occurs before a restart.
+	  </para>
+	  <para>
+	    Default is 10.
+	  </para>
+	</listitem>
+      </varlistentry>
+
+      <varlistentry>
+	<term>CTDB_MAX_OPEN_FILES=<parameter>NUM</parameter></term>
+	<listitem>
+	  <para>
+	    NUM is the maximum number of open files.
+	  </para>
+	  <para>
+	    There is no default.
+	  </para>
+	</listitem>
+      </varlistentry>
+
+      <varlistentry>
+	<term>CTDB_RC_LOCAL=<parameter>FILENAME</parameter></term>
+	<listitem>
+	  <para>
+	    FILENAME is a script fragment to be sourced by the
+	    <filename>functions</filename> that is sourced by scripts.
+	    On example use would be to override function definitions
+	    in unit tests.  As a sanity check, this file must be
+	    executable for it to be used.
+	  </para>
+	  <para>
+	    No default.
+	  </para>
+	</listitem>
+      </varlistentry>
+
+      <varlistentry>
+	<term>CTDB_RUN_TIMEOUT_MONITOR=yes|no</term>
+	<listitem>
+	  <para>
+	    Whether CTDB should simulate timing out monitor events.
+	    This uses the <filename>99.timeout</filename> eventscript.
+	  </para>
+	  <para>
+	    Default is no.
+	  </para>
+	</listitem>
+      </varlistentry>
+
+      <varlistentry>
+	<term>CTDB_SCRIPT_DEBUGLEVEL=<parameter>NUM</parameter></term>
+	<listitem>
+	  <para>
+	    NUM is the level debugging messages printed by CTDB
+	    scripts.  Setting this to a higher number (e.g. 4) will
+	    cause some scripts to log more messages.
+	  </para>
+	  <para>
+	    Default is 2.
+	  </para>
+	</listitem>
+      </varlistentry>
+
+      <varlistentry>
+	<term>CTDB_SUPPRESS_COREFILE=yes|no</term>
+	<listitem>
+	  <para>
+	    Whether CTDB core files should be suppressed.
+	  </para>
+	  <para>
+	    Default is no.
+	  </para>
+	</listitem>
+      </varlistentry>
+
+      <varlistentry>
+	<term>CTDB_VALGRIND=yes|no|<parameter>COMMAND</parameter></term>
+	<listitem>
+	  <para>
+	    If "yes", this causes
+	    <citerefentry><refentrytitle>ctdbd</refentrytitle>
+	    <manvolnum>1</manvolnum></citerefentry> to be run under
+	    <citerefentry><refentrytitle>valgrind</refentrytitle>
+	    <manvolnum>1</manvolnum></citerefentry> with logs going to
+	    <filename>/usr/local/var/log/ctdb_valgrind</filename>.  If neither
+	    "yes" nor "no" then the value is assumed to be a COMMAND
+	    (e.g. a <command>valgrind</command> variation, a
+	    <citerefentry><refentrytitle>gdb</refentrytitle>
+	    <manvolnum>1</manvolnum></citerefentry> command) that is
+	    used in place of the default <command>valgrind</command>
+	    command.  In either case, the <option>--valgrind</option>
+	    option is passed to <command>ctdbd</command>.
+	  </para>
+	  <para>
+	    Default is no.
+	  </para>
+	</listitem>
+      </varlistentry>
+
+      <varlistentry>
+	<term>CTDB_VARDIR=<parameter>DIRECTORY</parameter></term>
+	<listitem>
+	  <para>
+	    DIRECTORY containing CTDB files that are modified at
+	    runtime.
+	  </para>
+	  <para>
+	    Defaults to <filename>/usr/local/var/lib/ctdb</filename>.
+	  </para>
+	</listitem>
+      </varlistentry>
+
+    </variablelist>
+
+  </refsect1>
+
+
+  <refsect1>
+    <title>FILES</title>
+
+    <simplelist>
+      <member><filename>/usr/local/etc/ctdb/ctdbd.conf</filename></member>
+      <member><filename>/etc/sysconfig/ctdb</filename></member>
+      <member><filename>/etc/default/ctdb</filename></member>
+      <member><filename>/usr/local/etc/ctdb/sysconfig/ctdb</filename></member>
+    </simplelist>
+  </refsect1>
+
+  <refsect1>
+    <title>SEE ALSO</title>
+    <para>
+      <citerefentry><refentrytitle>ctdbd</refentrytitle>
+      <manvolnum>1</manvolnum></citerefentry>,
+
+      <citerefentry><refentrytitle>ctdbd_wrapper</refentrytitle>
+      <manvolnum>1</manvolnum></citerefentry>,
+
+      <citerefentry><refentrytitle>onnode</refentrytitle>
+      <manvolnum>1</manvolnum></citerefentry>,
+
+      <citerefentry><refentrytitle>ctdb</refentrytitle>
+      <manvolnum>7</manvolnum></citerefentry>,
+
+      <citerefentry><refentrytitle>ctdb-tunables</refentrytitle>
+      <manvolnum>7</manvolnum></citerefentry>,
+
+      <ulink url="http://ctdb.samba.org/"/>
+    </para>
+  </refsect1>
+
+  <refentryinfo>
+    <author>
+      <contrib>
+	This documentation was written by
+	Amitay Isaacs,
+	Martin Schwenke
+      </contrib>
+    </author>
+
+    <copyright>
+      <year>2007</year>
+      <holder>Andrew Tridgell</holder>
+      <holder>Ronnie Sahlberg</holder>
+    </copyright>
+    <legalnotice>
+      <para>
+	This program is free software; you can redistribute it and/or
+	modify it under the terms of the GNU General Public License as
+	published by the Free Software Foundation; either version 3 of
+	the License, or (at your option) any later version.
+      </para>
+      <para>
+	This program is distributed in the hope that it will be
+	useful, but WITHOUT ANY WARRANTY; without even the implied
+	warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+	PURPOSE.  See the GNU General Public License for more details.
+      </para>
+      <para>
+	You should have received a copy of the GNU General Public
+	License along with this program; if not, see
+	<ulink url="http://www.gnu.org/licenses"/>.
+      </para>
+    </legalnotice>
+  </refentryinfo>
+
+</refentry>

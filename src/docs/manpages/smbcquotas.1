@@ -1,0 +1,118 @@
+'\" t
+.\"     Title: smbcquotas
+.\"    Author: [see the "AUTHOR" section]
+.\" Generator: DocBook XSL Stylesheets v1.78.1 <http://docbook.sf.net/>
+.\"      Date: 05/18/2017
+.\"    Manual: User Commands
+.\"    Source: Samba 4.5
+.\"  Language: English
+.\"
+.TH "SMBCQUOTAS" "1" "05/18/2017" "Samba 4\&.5" "User Commands"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+smbcquotas \- Set or get QUOTAs of NTFS 5 shares
+.SH "SYNOPSIS"
+.HP \w'\ 'u
+smbcquotas {//server/share} [\-u|\-\-user\ user] [\-L|\-\-list] [\-F|\-\-fs] [\-S|\-\-set\ QUOTA_SET_COMMAND] [\-n|\-\-numeric] [\-t|\-\-test\-args] [\-v|\-\-verbose] [\-d\ debuglevel] [\-s\ configfile] [\-l\ logdir] [\-V] [\-U\ username] [\-N] [\-k] [\-A]
+.SH "DESCRIPTION"
+.PP
+This tool is part of the
+\fBsamba\fR(7)
+suite\&.
+.PP
+The
+smbcquotas
+program manipulates NT Quotas on SMB file shares\&.
+.SH "OPTIONS"
+.PP
+The following options are available to the
+smbcquotas
+program\&.
+.PP
+\-u|\-\-user user
+.RS 4
+Specifies the user of whom the quotas are get or set\&. By default the current user\*(Aqs username will be used\&.
+.RE
+.PP
+\-L|\-\-list
+.RS 4
+Lists all quota records of the share\&.
+.RE
+.PP
+\-F|\-\-fs
+.RS 4
+Show the share quota status and default limits\&.
+.RE
+.PP
+\-S|\-\-set QUOTA_SET_COMMAND
+.RS 4
+This command sets/modifies quotas for a user or on the share, depending on the QUOTA_SET_COMMAND parameter which is described later\&.
+.RE
+.PP
+\-n|\-\-numeric
+.RS 4
+This option displays all QUOTA information in numeric format\&. The default is to convert SIDs to names and QUOTA limits to a readable string format\&.
+.RE
+.PP
+\-t|\-\-test\-args
+.RS 4
+Don\*(Aqt actually do anything, only validate the correctness of the arguments\&.
+.RE
+.PP
+\-v|\-\-verbose
+.RS 4
+Be verbose\&.
+.RE
+.SH "QUOTA_SET_COMMAND"
+.PP
+The format of an the QUOTA_SET_COMMAND is an operation name followed by a set of parameters specific to that operation\&.
+.PP
+To set user quotas for the user specified by \-u or for the current username:
+.PP
+\fB UQLIM:<username>:<softlimit>/<hardlimit> \fR
+.PP
+To set the default quotas for a share:
+.PP
+\fB FSQLIM:<softlimit>/<hardlimit> \fR
+.PP
+To change the share quota settings:
+.PP
+\fB FSQFLAGS:QUOTA_ENABLED/DENY_DISK/LOG_SOFTLIMIT/LOG_HARD_LIMIT \fR
+.PP
+All limits are specified as a number of bytes\&.
+.SH "EXIT STATUS"
+.PP
+The
+smbcquotas
+program sets the exit status depending on the success or otherwise of the operations performed\&. The exit status may be one of the following values\&.
+.PP
+If the operation succeeded, smbcquotas returns an exit status of 0\&. If
+smbcquotas
+couldn\*(Aqt connect to the specified server, or when there was an error getting or setting the quota(s), an exit status of 1 is returned\&. If there was an error parsing any command line arguments, an exit status of 2 is returned\&.
+.SH "VERSION"
+.PP
+This man page is correct for version 3 of the Samba suite\&.
+.SH "AUTHOR"
+.PP
+The original Samba software and related utilities were created by Andrew Tridgell\&. Samba is now developed by the Samba Team as an Open Source project similar to the way the Linux kernel is developed\&.
+.PP
+smbcquotas
+was written by Stefan Metzmacher\&.

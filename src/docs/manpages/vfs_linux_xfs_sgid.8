@@ -1,0 +1,68 @@
+'\" t
+.\"     Title: vfs_syncops
+.\"    Author: [see the "AUTHOR" section]
+.\" Generator: DocBook XSL Stylesheets v1.78.1 <http://docbook.sf.net/>
+.\"      Date: 05/18/2017
+.\"    Manual: System Administration tools
+.\"    Source: Samba 4.5
+.\"  Language: English
+.\"
+.TH "VFS_SYNCOPS" "8" "05/18/2017" "Samba 4\&.5" "System Administration tools"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+vfs_linux_xfs_sgid
+.SH "SYNOPSIS"
+.HP \w'\ 'u
+vfs objects = linux_xfs_sgid
+.SH "DESCRIPTION"
+.PP
+This VFS module is part of the
+\fBsamba\fR(7)
+suite\&.
+.PP
+vfs_linux_xfs_sgid
+is a VFS module to work around an old Linux XFS bug that still exists: Under certain circumstances the SGID bit is not inherited (http://oss\&.sgi\&.com/bugzilla/show_bug\&.cgi?id=280)\&. The
+vfs_linux_xfs_sgid
+VFS module will work around this bug by manually setting the SGID bit after a
+mkdir
+if the parent directory had the SGID bit set\&.
+.PP
+This module is stackable\&.
+.SH "EXAMPLES"
+.PP
+Add syncops functionality for [share]:
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+        \fI[share]\fR
+	\m[blue]\fBvfs objects = linux_xfs_sgid\fR\m[]
+.fi
+.if n \{\
+.RE
+.\}
+.SH "VERSION"
+.PP
+This man page is correct for version 4\&.1\&.0 of the Samba suite\&.
+.SH "AUTHOR"
+.PP
+The original Samba software and related utilities were created by Andrew Tridgell\&. Samba is now developed by the Samba Team as an Open Source project similar to the way the Linux kernel is developed\&.

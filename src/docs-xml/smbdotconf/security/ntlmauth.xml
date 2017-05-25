@@ -1,0 +1,25 @@
+<samba:parameter name="ntlm auth"
+                 context="G"
+                 type="boolean"
+                 xmlns:samba="http://www.samba.org/samba/DTD/samba-doc">
+<description>
+    <para>This parameter determines whether or not <citerefentry><refentrytitle>smbd</refentrytitle>
+    <manvolnum>8</manvolnum></citerefentry> will attempt to
+    authenticate users using the NTLM encrypted password response.
+    If disabled, either the lanman password hash or an NTLMv2 response
+    will need to be sent by the client.</para>
+
+    <para>If this option, and <command moreinfo="none">lanman
+    auth</command> are both disabled, then only NTLMv2 logins will be
+    permited.  Not all clients support NTLMv2, and most will require
+    special configuration to use it.</para>
+
+    <para>The primary user of NTLMv1 is MSCHAPv2 for VPNs and 802.1x.</para>
+
+    <para>The default changed from "yes" to "no" with Samba 4.5.</para>
+</description>
+
+<related>lanman auth</related>
+<related>raw NTLMv2 auth</related>
+<value type="default">no</value>
+</samba:parameter>
