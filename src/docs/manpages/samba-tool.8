@@ -1,0 +1,398 @@
+'\" t
+.\"     Title: samba-tool
+.\"    Author: [see the "AUTHOR" section]
+.\" Generator: DocBook XSL Stylesheets v1.78.1 <http://docbook.sf.net/>
+.\"      Date: 05/18/2017
+.\"    Manual: System Administration tools
+.\"    Source: Samba 4.5
+.\"  Language: English
+.\"
+.TH "SAMBA\-TOOL" "8" "05/18/2017" "Samba 4\&.5" "System Administration tools"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+samba-tool \- Main Samba administration tool\&.
+.SH "SYNOPSIS"
+.HP \w'\ 'u
+samba\-tool [\-h] [\-W\ myworkgroup] [\-U\ user] [\-d\ debuglevel] [\-\-v]
+.SH "DESCRIPTION"
+.PP
+This tool is part of the
+\fBsamba\fR(7)
+suite\&.
+.SH "OPTIONS"
+.PP
+\-h|\-\-help
+.RS 4
+Show this help message and exit
+.RE
+.PP
+\-\-realm=REALM
+.RS 4
+Set the realm name
+.RE
+.PP
+\-\-simple\-bind\-dn=DN
+.RS 4
+DN to use for a simple bind
+.RE
+.PP
+\-\-password=PASSWORD
+.RS 4
+Password
+.RE
+.PP
+\-U USERNAME|\-\-username=USERNAME
+.RS 4
+Username
+.RE
+.PP
+\-W WORKGROUP|\-\-workgroup=WORKGROUP
+.RS 4
+Workgroup
+.RE
+.PP
+\-N|\-\-no\-pass
+.RS 4
+Don\*(Aqt ask for a password
+.RE
+.PP
+\-k KERBEROS|\-\-kerberos=KERBEROS
+.RS 4
+Use Kerberos
+.RE
+.PP
+\-\-ipaddress=IPADDRESS
+.RS 4
+IP address of the server
+.RE
+.SH "COMMANDS"
+.SS "dbcheck"
+.PP
+Check the local AD database for errors\&.
+.SS "delegation"
+.PP
+Manage Delegations\&.
+.SS "delegation add-service accountname principal [options]"
+.PP
+Add a service principal as msDS\-AllowedToDelegateTo\&.
+.SS "delegation del-service accountname principal [options]"
+.PP
+Delete a service principal as msDS\-AllowedToDelegateTo\&.
+.SS "delegation for-any-protocol accountname [(on|off)] [options]"
+.PP
+Set/unset UF_TRUSTED_TO_AUTHENTICATE_FOR_DELEGATION (S4U2Proxy) for an account\&.
+.SS "delegation for-any-service accountname [(on|off)] [options]"
+.PP
+Set/unset UF_TRUSTED_FOR_DELEGATION for an account\&.
+.SS "delegation show accountname [options]	"
+.PP
+Show the delegation setting of an account\&.
+.SS "dns"
+.PP
+Manage Domain Name Service (DNS)\&.
+.SS "dns add server zone name A|AAAA|PTR|CNAME|NS|MX|SRV|TXT data"
+.PP
+Add a DNS record\&.
+.SS "dns delete server zone name A|AAAA|PTR|CNAME|NS|MX|SRV|TXT data"
+.PP
+Delete a DNS record\&.
+.SS "dns query server zone name A|AAAA|PTR|CNAME|NS|MX|SRV|TXT|ALL [options] data"
+.PP
+Query a name\&.
+.SS "dns roothints server [name] [options]"
+.PP
+Query root hints\&.
+.SS "dns serverinfo server [options]"
+.PP
+Query server information\&.
+.SS "dns update server zone name A|AAAA|PTR|CNAME|NS|MX|SRV|TXT olddata newdata"
+.PP
+Update a DNS record\&.
+.SS "dns zonecreate server zone [options]"
+.PP
+Create a zone\&.
+.SS "dns zonedelete server zone [options]"
+.PP
+Delete a zone\&.
+.SS "dns zoneinfo server zone [options]"
+.PP
+Query zone information\&.
+.SS "dns zonelist server [options]"
+.PP
+List zones\&.
+.SS "domain"
+.PP
+Manage Domain\&.
+.SS "domain classicupgrade [options] classic_smb_conf"
+.PP
+Upgrade from Samba classic (NT4\-like) database to Samba AD DC database\&.
+.SS "domain dcpromo dnsdomain [DC|RODC] [options]"
+.PP
+Promote an existing domain member or NT4 PDC to an AD DC\&.
+.SS "domain demote"
+.PP
+Demote ourselves from the role of domain controller\&.
+.SS "domain exportkeytab keytab [options]"
+.PP
+Dumps Kerberos keys of the domain into a keytab\&.
+.SS "domain info ip_address [options]"
+.PP
+Print basic info about a domain and the specified DC\&.
+.SS "domain join dnsdomain [DC|RODC|MEMBER|SUBDOMAIN] [options]"
+.PP
+Join a domain as either member or backup domain controller\&.
+.SS "domain level show|raise options [options]"
+.PP
+Show/raise domain and forest function levels\&.
+.SS "domain passwordsettings show|set options [options]"
+.PP
+Show/set password settings\&.
+.SS "domain provision"
+.PP
+Promote an existing domain member or NT4 PDC to an AD DC\&.
+.SS "domain trust"
+.PP
+Domain and forest trust management\&.
+.SS "domain trust create DOMAIN options [options]"
+.PP
+Create a domain or forest trust\&.
+.SS "domain trust delete DOMAIN options [options]"
+.PP
+Delete a domain trust\&.
+.SS "domain trust list options [options]"
+.PP
+List domain trusts\&.
+.SS "domain trust namespaces [DOMAIN] options [options]"
+.PP
+Manage forest trust namespaces\&.
+.SS "domain trust show DOMAIN options [options]"
+.PP
+Show trusted domain details\&.
+.SS "domain trust validate DOMAIN options [options]"
+.PP
+Validate a domain trust\&.
+.SS "drs"
+.PP
+Manage Directory Replication Services (DRS)\&.
+.SS "drs bind"
+.PP
+Show DRS capabilities of a server\&.
+.SS "drs kcc"
+.PP
+Trigger knowledge consistency center run\&.
+.SS "drs options"
+.PP
+Query or change
+\fIoptions\fR
+for NTDS Settings object of a domain controller\&.
+.SS "drs replicate destination_DC source_DC NC [options]"
+.PP
+Replicate a naming context between two DCs\&.
+.SS "drs showrepl"
+.PP
+Show replication status\&.
+.SS "dsacl"
+.PP
+Administer DS ACLs
+.SS "dsacl set"
+.PP
+Modify access list on a directory object\&.
+.SS "fsmo"
+.PP
+Manage Flexible Single Master Operations (FSMO)\&.
+.SS "fsmo seize [options]"
+.PP
+Seize the role\&.
+.SS "fsmo show"
+.PP
+Show the roles\&.
+.SS "fsmo transfer [options]"
+.PP
+Transfer the role\&.
+.SS "gpo"
+.PP
+Manage Group Policy Objects (GPO)\&.
+.SS "gpo create displayname [options]"
+.PP
+Create an empty GPO\&.
+.SS "gpo del gpo [options]"
+.PP
+Delete GPO\&.
+.SS "gpo dellink container_dn gpo [options]"
+.PP
+Delete GPO link from a container\&.
+.SS "gpo fetch gpo [options]"
+.PP
+Download a GPO\&.
+.SS "gpo getinheritance container_dn [options]"
+.PP
+Get inheritance flag for a container\&.
+.SS "gpo getlink container_dn [options]"
+.PP
+List GPO Links for a container\&.
+.SS "gpo list username [options]"
+.PP
+List GPOs for an account\&.
+.SS "gpo listall"
+.PP
+List all GPOs\&.
+.SS "gpo listcontainers gpo [options]"
+.PP
+List all linked containers for a GPO\&.
+.SS "gpo setinheritance container_dn block|inherit [options]"
+.PP
+Set inheritance flag on a container\&.
+.SS "gpo setlink container_dn gpo [options]"
+.PP
+Add or Update a GPO link to a container\&.
+.SS "gpo show gpo [options]"
+.PP
+Show information for a GPO\&.
+.SS "group"
+.PP
+Manage groups\&.
+.SS "group add groupname [options]"
+.PP
+Create a new AD group\&.
+.SS "group addmembers groupname members [options]"
+.PP
+Add members to an AD group\&.
+.SS "group delete groupname [options]"
+.PP
+Delete an AD group\&.
+.SS "group list"
+.PP
+List all groups\&.
+.SS "group listmembers groupname [options]"
+.PP
+List all members of the specified AD group\&.
+.SS "group removemembers groupname members [options]"
+.PP
+Remove members from the specified AD group\&.
+.SS "ldapcmp \fIURL1\fR \fIURL2\fR \fIdomain|configuration|schema|dnsdomain|dnsforest\fR [options]"
+.PP
+Compare two LDAP databases\&.
+.SS "ntacl"
+.PP
+Manage NT ACLs\&.
+.SS "ntacl get file [options]"
+.PP
+Get ACLs on a file\&.
+.SS "ntacl set acl file [options]"
+.PP
+Set ACLs on a file\&.
+.SS "ntacl sysvolcheck"
+.PP
+Check sysvol ACLs match defaults (including correct ACLs on GPOs)\&.
+.SS "ntacl sysvolreset"
+.PP
+Reset sysvol ACLs to defaults (including correct ACLs on GPOs)\&.
+.SS "rodc"
+.PP
+Manage Read\-Only Domain Controller (RODC)\&.
+.SS "rodc preload SID|DN|accountname [options]"
+.PP
+Preload one account for an RODC\&.
+.SS "sites"
+.PP
+Manage sites\&.
+.SS "sites create site [options]"
+.PP
+Create a new site\&.
+.SS "sites remove site [options]"
+.PP
+Delete an existing site\&.
+.SS "spn"
+.PP
+Manage Service Principal Names (SPN)\&.
+.SS "spn add name user [options]"
+.PP
+Create a new SPN\&.
+.SS "spn delete name [user] [options]"
+.PP
+Delete an existing SPN\&.
+.SS "spn list user [options]"
+.PP
+List SPNs of a given user\&.
+.SS "testparm"
+.PP
+Check the syntax of the configuration file\&.
+.SS "time"
+.PP
+Retrieve the time on a server\&.
+.SS "user"
+.PP
+Manage users\&.
+.SS "user add username [password]"
+.PP
+Create a new user\&. Please note that this subcommand is deprecated and available for compatibility reasons only\&. Please use
+samba\-tool user create
+instead\&.
+.SS "user create username [password]"
+.PP
+Create a new user in the Active Directory Domain\&.
+.SS "user delete username [options]"
+.PP
+Delete an existing user account\&.
+.SS "user disable username"
+.PP
+Disable an user account\&.
+.SS "user enable username"
+.PP
+Enable an user account\&.
+.SS "user list"
+.PP
+List all users\&.
+.SS "user password [options]"
+.PP
+Change password for an user account (the one provided in authentication)\&.
+.SS "user setexpiry username [options]"
+.PP
+Set the expiration of an user account\&.
+.SS "user setpassword username [options]"
+.PP
+Sets or resets the password of an user account\&.
+.SS "user getpassword username [options]"
+.PP
+Gets the password of an user account\&.
+.SS "user syncpasswords --cache-ldb-initialize [options]"
+.PP
+Syncs the passwords of all user accounts, using an optional script\&.
+.PP
+Note that this command should run on a single domain controller only (typically the PDC\-emulator)\&.
+.SS "vampire [options] \fIdomain\fR"
+.PP
+Join and synchronise a remote AD domain to the local server\&. Please note that
+samba\-tool vampire
+is deprecated, please use
+samba\-tool domain join
+instead\&.
+.SS "help"
+.PP
+Gives usage information\&.
+.SH "VERSION"
+.PP
+This man page is complete for version 4 of the Samba suite\&.
+.SH "AUTHOR"
+.PP
+The original Samba software and related utilities were created by Andrew Tridgell\&. Samba is now developed by the Samba Team as an Open Source project similar to the way the Linux kernel is developed\&.
+.PP
+The samba\-tool manpage was written by Karolin Seeger\&.

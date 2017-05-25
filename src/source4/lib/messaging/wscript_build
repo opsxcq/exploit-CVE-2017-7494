@@ -1,0 +1,15 @@
+#!/usr/bin/env python
+
+
+bld.SAMBA_LIBRARY('MESSAGING',
+	source='messaging.c',
+	public_deps='samba-util NDR_IRPC UNIX_PRIVS cluster ndr dcerpc messages_util server_id_db talloc_report',
+	private_library=True
+	)
+
+bld.SAMBA_PYTHON('python_messaging',
+	source='pymessaging.c',
+	deps='MESSAGING events pyparam_util pytalloc-util',
+	realname='samba/messaging.so'
+	)
+

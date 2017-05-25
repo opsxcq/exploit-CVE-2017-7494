@@ -1,0 +1,22 @@
+#!/usr/bin/env python
+
+bld.SAMBA_LIBRARY('dsdb-module',
+	source=[],
+	deps='DSDB_MODULE_HELPERS DSDB_MODULE_HELPER_RIDALLOC',
+	private_library=True,
+	grouping_library=True)
+
+bld.SAMBA_SUBSYSTEM('DSDB_MODULE_HELPERS',
+	source='util.c acl_util.c schema_util.c netlogon.c',
+	autoproto='util_proto.h',
+	deps='ldb ndr samdb-common samba-security'
+	)
+
+bld.SAMBA_SUBSYSTEM('DSDB_MODULE_HELPER_RIDALLOC',
+	source='ridalloc.c',
+	autoproto='ridalloc.h',
+	deps='MESSAGING',
+	)
+
+if bld.AD_DC_BUILD_IS_ENABLED():
+    bld.PROCESS_SEPARATE_RULE("server")

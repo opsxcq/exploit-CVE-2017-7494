@@ -1,0 +1,62 @@
+'\" t
+.\"     Title: samba-regedit
+.\"    Author: [see the "AUTHOR" section]
+.\" Generator: DocBook XSL Stylesheets v1.78.1 <http://docbook.sf.net/>
+.\"      Date: 05/18/2017
+.\"    Manual: System Administration tools
+.\"    Source: Samba 4.5
+.\"  Language: English
+.\"
+.TH "SAMBA\-REGEDIT" "8" "05/18/2017" "Samba 4\&.5" "System Administration tools"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+samba-regedit \- ncurses based tool to manage the Samba registry
+.SH "SYNOPSIS"
+.HP \w'\ 'u
+samba\-regedit [\-\-help] [\-\-usage] [\-d\ <debug\ level>] [\-s\ <configuration\ file>] [\-l\ <log\ directory>] [\-V] [\-\-option=<parameter>=<value>] [\-\-socket\-options=<SOCKETOPTIONS>] [\-\-netbiosname=<NETBIOSNAME>] [\-\-workgroup=<WORKGROUP>] [\-\-scope=<SCOPE>] [\-\-user=<USERNAME>] [\-N] [\-k] [\-\-authentication\-file=<FILE>] [\-\-signing=[on|off|required]] [\-P] [\-e] [\-C] [\-\-pw\-nt\-hash]
+.SH "DESCRIPTION"
+.PP
+This tool is part of the
+\fBsamba\fR(7)
+suite\&.
+.PP
+samba\-regedit
+is a ncurses based tool to manage the Samba registry\&. It can be used to show/edit registry keys/subkeys and their values\&.
+.SH "OPTIONS"
+.PP
+\-\-usage
+.RS 4
+Display brief usage message\&.
+.RE
+.SH "VERSION"
+.PP
+This man page is correct for version 4 of the Samba suite\&.
+.SH "SEE ALSO"
+.PP
+\fBsmbd\fR(8),
+\fBsamba\fR(7)
+and
+\fBnet\fR(8)\&.
+.SH "AUTHOR"
+.PP
+The original Samba software and related utilities were created by Andrew Tridgell\&. Samba is now developed by the Samba Team as an Open Source project similar to the way the Linux kernel is developed\&.
+.PP
+The samba\-regedit man page was written by Karolin Seeger\&.

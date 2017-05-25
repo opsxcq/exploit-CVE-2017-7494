@@ -1,0 +1,264 @@
+#!/usr/bin/env python
+# Waf build script for Samba 4's bundled Heimdal.
+
+# Unless explicitly requested by the user (e.g.
+# "./configure --bundled-libraries=!asn1_compile") this will always use the
+# bundled Heimdal, even if a system heimdal was found. The reason
+# for this is that our checks for the system heimdal are not accurate
+# enough yet to know if it is usable (some bug fix might be missing,
+# compile_et might not generate the expected code, etc).
+
+import Logs, sys
+
+conf.CHECK_TYPE('u_char', 'uint8_t')
+conf.CHECK_TYPE('u_int32_t', 'uint32_t')
+
+conf.CHECK_HEADERS('err.h')
+
+conf.CHECK_HEADERS('ifaddrs.h')
+conf.CHECK_HEADERS('''crypt.h errno.h inttypes.h netdb.h signal.h sys/bswap.h
+                  sys/file.h sys/stropts.h sys/timeb.h sys/times.h sys/uio.h sys/un.h
+              sys/utsname.h time.h timezone.h ttyname.h netinet/in.h
+              netinet/in6.h netinet6/in6.h''')
+
+conf.CHECK_HEADERS('curses.h term.h termcap.h', together=True)
+
+conf.CHECK_FUNCS('''atexit cgetent getprogname setprogname gethostname
+                    putenv rcmd readv sendmsg setitimer strlwr strncasecmp
+            strptime strsep strsep_copy    strtok_r strupr swab umask uname unsetenv
+            closefrom err warn errx warnx flock writev''')
+
+if conf.CHECK_FUNCS('strerror_r'):
+    # Check if strerror_r is BSD compatible (default GNU implementation is not what Heimdal expects)
+    conf.CHECK_CODE('int strerror_r(int errnum, char *buf, size_t buflen);',
+                    'STRERROR_R_PROTO_COMPATIBLE',
+                    headers='string.h', addmain=False, link=False,
+                    msg="Checking for XSI (rather than GNU) prototype for strerror_r")
+
+conf.CHECK_FUNCS_IN('hstrerror', 'resolv socket nsl', checklibc=True)
+conf.CHECK_FUNCS_IN('''getnameinfo sendmsg socket getipnodebyname gethostent gethostent_r
+                       sethostent endhostent getipnodebyaddr freehostent gethostbyname
+                       gethostbyname_r gethostbyaddr''',
+                    'socket nsl',
+                    checklibc=True)
+
+conf.CHECK_FUNCS('iruserok')
+
+conf.CHECK_FUNCS('bswap16')
+conf.CHECK_FUNCS('bswap32')
+
+conf.CHECK_TYPE('struct winsize', define='HAVE_STRUCT_WINSIZE', headers='sys/termios.h sys/ioctl.h')
+conf.CHECK_STRUCTURE_MEMBER('struct winsize', 'ws_xpixel',
+                    define='HAVE_WS_XPIXEL', headers='sys/termios.h sys/ioctl.h')
+conf.CHECK_STRUCTURE_MEMBER('struct winsize', 'ws_ypixel',
+                    define='HAVE_WS_YPIXEL', headers='sys/termios.h sys/ioctl.h')
+conf.DEFINE('HAVE_KRB_STRUCT_WINSIZE', 1)
+conf.DEFINE('VOID_RETSIGTYPE', 1)
+
+conf.CHECK_VARIABLE('h_errno', headers='netdb.h')
+
+# strangely enough, we need it with another define too
+conf.CHECK_DECLS('h_errno', headers='netdb.h')
+
+conf.CHECK_FUNCS_IN('res_search res_nsearch res_ndestroy dns_search dn_expand', 'resolv',
+                    checklibc=True, headers='netinet/in.h arpa/nameser.h resolv.h dns.h')
+conf.CHECK_VARIABLE('_res', headers='netinet/in.h arpa/nameser.h resolv.h')
+conf.CHECK_DECLS('_res', headers='netinet/in.h arpa/nameser.h resolv.h')
+
+conf.DEFINE('HAVE_KRB5',1)
+
+conf.CHECK_FUNCS('dirfd', headers='dirent.h')
+conf.CHECK_DECLS('dirfd', reverse=True, headers='dirent.h')
+conf.CHECK_STRUCTURE_MEMBER('DIR', 'dd_fd', define='HAVE_DIR_DD_FD',  headers='dirent.h')
+
+conf.DEFINE('SAMBA4_USES_HEIMDAL', 1)
+
+# setup the right defines for a in-tree heimdal build
+Logs.info("Using in-tree heimdal kerberos defines")
+conf.define('HAVE_GSSAPI_GSSAPI_H', 1)
+conf.define('HAVE_GSSAPI_GSSAPI_KRB5_H', 1)
+conf.define('HAVE_AP_OPTS_USE_SUBKEY', 1)
+conf.define('HAVE_KRB5_ADDRESSES', 1)
+conf.define('HAVE_KRB5_KEYTAB_ENTRY_KEYBLOCK', 1)
+conf.define('HAVE_KRB5_SET_REAL_TIME', 1)
+conf.define('HAVE_COM_ERR_H', 1)
+conf.define('HAVE_ADDR_TYPE_IN_KRB5_ADDRESS', 1)
+conf.define('HAVE_GSS_DISPLAY_STATUS', 1)
+conf.define('HAVE_GSS_WRAP_IOV', 1)
+conf.define('HAVE_GSS_KRB5_IMPORT_CRED', 1)
+conf.define('HAVE_GSS_OID_EQUAL', 1)
+conf.define('HAVE_GSS_INQUIRE_SEC_CONTEXT_BY_OID', 1)
+conf.define('HAVE_GSSKRB5_EXTRACT_AUTHZ_DATA_FROM_SEC_CONTEXT', 1)
+conf.define('HAVE_GSSKRB5_GET_SUBKEY', 1)
+conf.define('HAVE_GSS_KRB5_EXPORT_LUCID_SEC_CONTEXT', 1)
+conf.define('HAVE_GSS_IMPORT_CRED', 1)
+conf.define('HAVE_GSS_EXPORT_CRED', 1)
+conf.define('HAVE_GSS_KRB5_CRED_NO_CI_FLAGS_X', 1)
+conf.define('HAVE_GSSAPI', 1)
+conf.define('HAVE_ADDR_TYPE_IN_KRB5_ADDRESS', 1)
+conf.define('HAVE_CHECKSUM_IN_KRB5_CHECKSUM', 1)
+conf.define('HAVE_DECL_KRB5_AUTH_CON_SET_REQ_CKSUMTYPE', 0)
+conf.define('HAVE_DECL_KRB5_GET_CREDENTIALS_FOR_USER', 0)
+conf.define('HAVE_E_DATA_POINTER_IN_KRB5_ERROR', 1)
+conf.define('HAVE_INITIALIZE_KRB5_ERROR_TABLE', 1)
+conf.define('HAVE_KRB5_ADDRESSES', 1)
+conf.define('HAVE_KRB5_AUTH_CON_SETKEY', 1)
+conf.define('HAVE_KRB5_CC_GET_LIFETIME', 1)
+conf.define('HAVE_KRB5_CC_COPY_CACHE', 1)
+conf.define('HAVE_KRB5_CREATE_CHECKSUM', 1)
+conf.define('HAVE_KRB5_CRYPTO', 1)
+conf.define('HAVE_KRB5_CRYPTO_DESTROY', 1)
+conf.define('HAVE_KRB5_CRYPTO_INIT', 1)
+conf.define('HAVE_KRB5_C_VERIFY_CHECKSUM', 1)
+conf.define('HAVE_KRB5_ENCTYPE_TO_STRING', 1)
+conf.define('HAVE_KRB5_ENCTYPE_TO_STRING_WITH_KRB5_CONTEXT_ARG', 1)
+conf.define('HAVE_KRB5_FREE_ERROR_CONTENTS', 1)
+conf.define('HAVE_KRB5_FREE_HOST_REALM', 1)
+conf.define('HAVE_KRB5_FWD_TGT_CREDS', 1)
+conf.define('HAVE_KRB5_GET_CREDS', 1)
+conf.define('HAVE_KRB5_GET_CREDS_OPT_ALLOC', 1)
+conf.define('HAVE_KRB5_GET_CREDS_OPT_SET_IMPERSONATE', 1)
+conf.define('HAVE_KRB5_GET_DEFAULT_IN_TKT_ETYPES', 1)
+conf.define('HAVE_KRB5_GET_HOST_REALM', 1)
+conf.define('HAVE_KRB5_GET_INIT_CREDS_OPT_ALLOC', 1)
+conf.define('HAVE_KRB5_GET_INIT_CREDS_OPT_FREE', 1)
+conf.define('HAVE_KRB5_GET_INIT_CREDS_OPT_GET_ERROR', 1)
+conf.define('HAVE_KRB5_GET_INIT_CREDS_OPT_SET_PAC_REQUEST', 1)
+conf.define('HAVE_KRB5_GET_INIT_CREDS_KEYBLOCK', 1)
+conf.define('HAVE_KRB5_GET_PW_SALT', 1)
+conf.define('HAVE_KRB5_GET_RENEWED_CREDS', 1)
+conf.define('HAVE_KRB5_KEYBLOCK_KEYVALUE', 1)
+conf.define('HAVE_KRB5_KEYBLOCK_INIT', 1)
+conf.define('HAVE_KRB5_KEYTAB_ENTRY_KEYBLOCK', 1)
+conf.define('HAVE_KRB5_KRBHST_GET_ADDRINFO', 1)
+conf.define('HAVE_KRB5_KRBHST_INIT', 1)
+conf.define('HAVE_KRB5_KT_COMPARE', 1)
+conf.define('HAVE_KRB5_KT_FREE_ENTRY', 1)
+conf.define('HAVE_KRB5_KU_OTHER_CKSUM', 1)
+conf.define('HAVE_KRB5_LOCATE_PLUGIN_H', 1)
+conf.define('HAVE_KRB5_MK_REQ_EXTENDED', 1)
+conf.define('HAVE_KRB5_PRINCIPAL_COMPARE_ANY_REALM', 1)
+conf.define('HAVE_KRB5_PRINCIPAL_GET_COMP_STRING', 1)
+conf.define('HAVE_KRB5_PRINCIPAL_GET_REALM', 1)
+conf.define('HAVE_KRB5_MAKE_PRINCIPAL', 1)
+conf.define('HAVE_KRB5_REALM_TYPE', 1)
+conf.define('HAVE_KRB5_SET_DEFAULT_IN_TKT_ETYPES', 1)
+conf.define('HAVE_KRB5_SET_REAL_TIME', 1)
+conf.define('HAVE_KRB5_STRING_TO_KEY', 1)
+conf.define('HAVE_KRB5_STRING_TO_KEY_SALT', 1)
+conf.define('HAVE_FREE_CHECKSUM', 1)
+conf.define('HAVE_LIBKRB5', 1)
+conf.define('KRB5_CREDS_OPT_FREE_REQUIRES_CONTEXT', 1)
+conf.define('HAVE_ETYPE_IN_ENCRYPTEDDATA', 1)
+conf.define('KRB5_PRINC_REALM_RETURNS_REALM', 1)
+conf.define('HAVE_KRB5_PRINCIPAL_GET_REALM', 1)
+conf.define('HAVE_KRB5_H', 1)
+conf.define('HAVE_AP_OPTS_USE_SUBKEY', 1)
+conf.define('HAVE_ENCTYPE_ARCFOUR_HMAC_MD5', 1)
+conf.define('HAVE_ENCTYPE_ARCFOUR_HMAC_MD5_56', 1)
+conf.define('HAVE_ENCTYPE_ARCFOUR_HMAC', 1)
+conf.define('HAVE_KRB5_PDU_NONE_DECL', 1)
+conf.define('HAVE_ENCTYPE_AES128_CTS_HMAC_SHA1_96', 1)
+conf.define('HAVE_ENCTYPE_AES256_CTS_HMAC_SHA1_96', 1)
+conf.define('HAVE_KRB5_PRINCIPAL_GET_NUM_COMP', 1)
+conf.define('HAVE_GSSAPI_GSSAPI_SPNEGO_H', 1)
+conf.define('HAVE_FLAGS_IN_KRB5_CREDS', 1)
+conf.define('HAVE_KRB5_CONFIG_GET_BOOL_DEFAULT', 1)
+conf.define('HAVE_KRB5_DATA_COPY', 1)
+conf.define('HAVE_KRB5_PRINCIPAL_SET_REALM', 1)
+conf.define('HAVE_KRB5_PRINCIPAL_SET_TYPE', 1)
+conf.define('HAVE_KRB5_PRINCIPAL_GET_TYPE', 1)
+conf.define('HAVE_KRB5_WARNX', 1)
+conf.define('HAVE_KRB5_PROMPT_TYPE', 1)
+
+heimdal_includedirs = []
+heimdal_libdirs = []
+krb5_config = conf.find_program("krb5-config.heimdal", var="HEIMDAL_KRB5_CONFIG")
+if not krb5_config:
+    krb5_config = conf.find_program("krb5-config", var="HEIMDAL_KRB5_CONFIG")
+if krb5_config:
+    # Not ideal, but seems like the best way to get at these paths:
+    f = open(krb5_config, 'r')
+    try:
+        for l in f:
+            if l.startswith("libdir="):
+                heimdal_libdirs.append(l.strip()[len("libdir="):])
+            elif l.startswith("includedir="):
+                heimdal_includedirs.append(l.strip()[len("includedir="):])
+    finally:
+        f.close()
+
+def check_system_heimdal_lib(name, functions='', headers='', onlyif=None):
+    # Only use system library if the user requested the bundled one not be
+    # used.
+    if conf.LIB_MAY_BE_BUNDLED(name):
+        return False
+    setattr(conf.env, "CPPPATH_%s" % name.upper(), heimdal_includedirs)
+    setattr(conf.env, "LIBPATH_%s" % name.upper(), heimdal_libdirs)
+    if not conf.CHECK_BUNDLED_SYSTEM(name, checkfunctions=functions, headers=headers,
+                                     onlyif=onlyif):
+        return False
+    conf.define('USING_SYSTEM_%s' % name.upper(), 1)
+    return True
+
+def check_system_heimdal_binary(name):
+    if conf.LIB_MAY_BE_BUNDLED(name):
+        return False
+    if not conf.find_program(name, var=name.upper()):
+        return False
+    conf.define('USING_SYSTEM_%s' % name.upper(), 1)
+    return True
+
+check_system_heimdal_lib("com_err", "com_right_r com_err", "com_err.h")
+
+if check_system_heimdal_lib("roken", "rk_socket_set_reuseaddr", "roken.h"):
+    conf.env.CPPPATH_ROKEN_HOSTCC = conf.env.CPPPATH_ROKEN
+    conf.env.LIBPATH_ROKEN_HOSTCC = conf.env.LIBPATH_ROKEN
+    conf.env.LIB_ROKEN_HOSTCC = "roken"
+    conf.SET_TARGET_TYPE("ROKEN_HOSTCC", 'SYSLIB')
+
+# Make sure HAVE_CONFIG_H is unset, as the system Heimdal headers use it
+# and include config.h if it is set, resulting in failure (since config.h
+# doesn't yet exist)
+
+CCDEFINES = list(conf.env.CCDEFINES)
+conf.undefine("HAVE_CONFIG_H")
+while "HAVE_CONFIG_H=1" in conf.env.CCDEFINES:
+    conf.env.CCDEFINES.remove("HAVE_CONFIG_H=1")
+try:
+    check_system_heimdal_lib("wind", "wind_stringprep", "wind.h", onlyif="roken")
+    check_system_heimdal_lib("hx509", "hx509_bitstring_print", "hx509.h", onlyif="roken wind")
+    check_system_heimdal_lib("asn1", "initialize_asn1_error_table", "asn1_err.h", onlyif="roken com_err")
+    check_system_heimdal_lib("heimbase", "heim_cmp", "heimbase.h", onlyif="roken")
+    check_system_heimdal_lib("hcrypto", "MD4_Init", "hcrypto/md4.h",
+        onlyif="asn1 roken com_err")
+    if check_system_heimdal_lib("krb5", "krb5_anyaddr", "krb5.h",
+        onlyif="roken wind asn1 hx509 hcrypto com_err heimbase"):
+        conf.CHECK_FUNCS_IN('krb5_free_unparsed_name', 'krb5', headers="krb5.h")
+    check_system_heimdal_lib("gssapi", "gss_oid_to_name", "gssapi.h",
+        onlyif="hcrypto asn1 roken krb5 com_err wind")
+    check_system_heimdal_lib("heimntlm", "heim_ntlm_ntlmv2_key", "heimntlm.h",
+        onlyif="roken hcrypto krb5")
+    if check_system_heimdal_lib("hdb", "hdb_db_dir", "krb5.h hdb.h",
+        onlyif="roken krb5 hcrypto com_err wind"):
+        conf.CHECK_CODE('''
+            #include <hdb.h>
+            int main(void) { hdb_enctype2key(NULL, NULL, NULL, 0, NULL); }
+            ''',
+            define='HDB_ENCTYPE2KEY_TAKES_KEYSET',
+            addmain=False,
+            lib='hdb',
+            msg='Checking whether hdb_enctype2key takes a keyset argument',
+            local_include=False)
+
+    check_system_heimdal_lib("kdc", "kdc_log", "kdc.h",
+        onlyif="roken krb5 hdb asn1 heimntlm hcrypto com_err wind heimbase")
+finally:
+    conf.env.CCDEFINES = CCDEFINES
+
+# With the proper checks in place we should be able to build against the system libtommath.
+#if conf.CHECK_BUNDLED_SYSTEM('tommath', checkfunctions='mp_init', headers='tommath.h'):
+#    conf.define('USING_SYSTEM_TOMMATH', 1)
+
+check_system_heimdal_binary("compile_et")
+check_system_heimdal_binary("asn1_compile")
