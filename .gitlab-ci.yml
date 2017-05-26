@@ -1,0 +1,15 @@
+variables:
+    PUBLIC_TAG: 'vulnerables/cve-2017-7494'
+stages:
+    - build
+
+build:
+  stage: build
+  script:
+    - export IMAGE_TAG=$(echo -en $CI_BUILD_REF_NAME | tr -c '[:alnum:]_.-' '-' | sed 's/master/latest/g')
+    - docker login -u "gitlab-ci-token" -p "$CI_BUILD_TOKEN" $CI_REGISTRY
+    - docker build --pull -t "$CI_REGISTRY_IMAGE:$IMAGE_TAG" .
+    - docker push "$CI_REGISTRY_IMAGE:$IMAGE_TAG"
+    - docker tag "$CI_REGISTRY_IMAGE:$IMAGE_TAG" "$PUBLIC_TAG"
+  tags:
+    - docker
